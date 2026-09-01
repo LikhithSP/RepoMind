@@ -1,0 +1,82 @@
+[
+  {
+    "id": "q1",
+    "type": "code",
+    "question": "How is the Session class implemented and how does it handle request preparation?",
+    "ground_truth_answer": "The Session class coordinates connection pooling, mounting adapters, and merges session-level settings (headers, auth, cookies) into PreparedRequest instances.",
+    "expected_files": ["requests/sessions.py"],
+    "expected_symbols": ["Session", "Session.prepare_request"]
+  },
+  {
+    "id": "q2",
+    "type": "code",
+    "question": "Where is the HTTPAdapter defined and how does it interact with urllib3 PoolManager?",
+    "ground_truth_answer": "HTTPAdapter is implemented in requests/adapters.py and initializes the urllib3 PoolManager with pool_connections and pool_maxsize.",
+    "expected_files": ["requests/adapters.py"],
+    "expected_symbols": ["HTTPAdapter", "HTTPAdapter.init_poolmanager"]
+  },
+  {
+    "id": "q3",
+    "type": "code",
+    "question": "How is HTTP Basic Authentication implemented?",
+    "ground_truth_answer": "HTTPBasicAuth is defined in requests/auth.py and encodes credentials into standard Basic base64 Authorization headers.",
+    "expected_files": ["requests/auth.py"],
+    "expected_symbols": ["HTTPBasicAuth", "HTTPDigestAuth"]
+  },
+  {
+    "id": "q4",
+    "type": "doc",
+    "question": "What are the recommended installation and environment prerequisites in the documentation?",
+    "ground_truth_answer": "Installation is performed via pip install requests and requires Python 3.8+ as described in the README/docs.",
+    "expected_files": ["README.md", "docs/index.md"],
+    "expected_symbols": []
+  },
+  {
+    "id": "q5",
+    "type": "issue",
+    "question": "What is the discussion around supporting HTTP/2 connection pooling?",
+    "ground_truth_answer": "Issue #5930 discusses HTTP/2 support, noting that urllib3 does not natively support HTTP/2 without alternative adapters like httpx.",
+    "expected_files": ["issues/5930"],
+    "expected_symbols": ["#5930"]
+  },
+  {
+    "id": "q6",
+    "type": "issue",
+    "question": "Why is the Authorization header stripped on redirects across different domains?",
+    "ground_truth_answer": "Issue #5104 addresses CVE security concerns where cross-domain redirects strip auth headers to prevent token leakage.",
+    "expected_files": ["issues/5104"],
+    "expected_symbols": ["#5104"]
+  },
+  {
+    "id": "q7",
+    "type": "code",
+    "question": "How are custom exceptions like RequestException, Timeout, and HTTPError structured?",
+    "ground_truth_answer": "Custom exceptions inherit from RequestException defined in requests/exceptions.py.",
+    "expected_files": ["requests/exceptions.py"],
+    "expected_symbols": ["RequestException", "HTTPError", "Timeout"]
+  },
+  {
+    "id": "q8",
+    "type": "code",
+    "question": "How does response decoding handle character sets and gzip/deflate decompression?",
+    "ground_truth_answer": "Response content is decoded in Response.text using apparent_encoding / chardet and content decompression streams.",
+    "expected_files": ["requests/models.py"],
+    "expected_symbols": ["Response", "Response.text", "Response.content"]
+  },
+  {
+    "id": "q9",
+    "type": "negative",
+    "question": "How does this repo implement quantum cryptography blockchain hashing for transactions?",
+    "ground_truth_answer": "Not found in this codebase.",
+    "expected_files": [],
+    "expected_symbols": []
+  },
+  {
+    "id": "q10",
+    "type": "negative",
+    "question": "Where is the React front-end redux store reducer configured?",
+    "ground_truth_answer": "Not found in this codebase.",
+    "expected_files": [],
+    "expected_symbols": []
+  }
+]
