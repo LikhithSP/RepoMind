@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useRef, useEffect } from 'react';
-import { Send, Terminal, GitBranch, RefreshCw, Layers, PlusCircle, ArrowRight, ShieldCheck, Sparkles, Database } from 'lucide-react';
+import { Send, Terminal, GitBranch, RefreshCw, Layers, PlusCircle, ArrowRight, ShieldCheck, Sparkles, Sun, Moon } from 'lucide-react';
 import { ChatMessage, SourceChunk, TraceInfo } from '../lib/types';
 import { MessageBubble } from '../components/MessageBubble';
 import { ModelSelector } from '../components/ModelSelector';
@@ -17,6 +17,7 @@ export default function Home() {
   const [commitSha, setCommitSha] = useState('8d3f9b2');
   const [indexedPoints, setIndexedPoints] = useState<number | null>(null);
   const [isIngestOpen, setIsIngestOpen] = useState(false);
+  const [theme, setTheme] = useState<'dark' | 'light'>('dark');
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
@@ -27,6 +28,28 @@ export default function Home() {
   useEffect(() => {
     scrollToBottom();
   }, [messages]);
+
+  // Sync theme with document element and localStorage
+  useEffect(() => {
+    try {
+      const savedTheme = localStorage.getItem('repomind_theme') as 'dark' | 'light' | null;
+      if (savedTheme) {
+        setTheme(savedTheme);
+        document.documentElement.setAttribute('data-theme', savedTheme);
+      } else {
+        document.documentElement.setAttribute('data-theme', 'dark');
+      }
+    } catch (_) {}
+  }, []);
+
+  const toggleTheme = () => {
+    const nextTheme = theme === 'dark' ? 'light' : 'dark';
+    setTheme(nextTheme);
+    document.documentElement.setAttribute('data-theme', nextTheme);
+    try {
+      localStorage.setItem('repomind_theme', nextTheme);
+    } catch (_) {}
+  };
 
   // Load custom repository from localStorage if available
   useEffect(() => {
@@ -55,7 +78,6 @@ export default function Home() {
         if (data.commit_sha) {
           setCommitSha(data.commit_sha);
         }
-        // Save synced active repository
         try {
           localStorage.setItem('coderag_custom_repo', JSON.stringify({
             repoName: data.repo_name || repoName,
@@ -64,9 +86,7 @@ export default function Home() {
           }));
         } catch (_) {}
       })
-      .catch(() => {
-        // Fallback demo state if backend not running
-      });
+      .catch(() => {});
   }, []);
 
   const handleSubmit = async (queryText?: string) => {
@@ -197,57 +217,45 @@ export default function Home() {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', height: '100vh', background: 'var(--bg-main)' }}>
       {/* Top Navbar */}
-      <header className="glass-panel" style={{
+      <header style={{
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'space-between',
-        padding: '10px 24px',
+        padding: '10px 20px',
         borderBottom: '1px solid var(--border-color)',
+        background: 'var(--bg-main)',
         zIndex: 10,
       }}>
         {/* Brand */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
           <div style={{
-            width: '28px',
-            height: '28px',
-            borderRadius: 'var(--radius-sm)',
-            background: 'linear-gradient(135deg, #38bdf8, #818cf8)',
+            width: '26px',
+            height: '26px',
+            borderRadius: '6px',
+            background: 'var(--accent-cyan)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            color: '#000',
-            boxShadow: '0 0 12px rgba(56, 189, 248, 0.3)',
+            color: '#fff',
           }}>
-            <Terminal size={15} strokeWidth={2.5} />
+            <Terminal size={14} strokeWidth={2.5} />
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <span style={{ fontWeight: 700, fontSize: '14.5px', letterSpacing: '-0.02em', color: '#fff' }}>
+            <span style={{ fontWeight: 600, fontSize: '14.5px', color: 'var(--text-primary)', letterSpacing: '-0.01em' }}>
               RepoMind
-            </span>
-            <span style={{
-              fontSize: '10.5px',
-              fontWeight: 500,
-              background: 'rgba(255, 255, 255, 0.04)',
-              border: '1px solid var(--border-color)',
-              color: 'var(--text-muted)',
-              padding: '1px 6px',
-              borderRadius: '4px',
-              fontFamily: 'var(--font-mono)',
-            }}>
-              v0.1
             </span>
           </div>
         </div>
 
         {/* Action Controls & Active Repo Pill */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
           {/* Active Repo Badge */}
           <div style={{
             display: 'flex',
             alignItems: 'center',
-            gap: '8px',
+            gap: '7px',
             padding: '4px 10px',
-            background: 'rgba(255, 255, 255, 0.02)',
+            background: 'var(--bg-surface)',
             border: '1px solid var(--border-color)',
             borderRadius: 'var(--radius-sm)',
             fontSize: '12px',
@@ -259,11 +267,10 @@ export default function Home() {
             </span>
             {indexedPoints !== null && (
               <span style={{
-                fontSize: '10px',
-                background: 'rgba(16, 185, 129, 0.1)',
-                border: '1px solid rgba(16, 185, 129, 0.25)',
-                color: 'var(--accent-emerald)',
-                padding: '1px 6px',
+                fontSize: '10.5px',
+                background: 'var(--accent-cyan-subtle)',
+                color: 'var(--accent-cyan)',
+                padding: '0 6px',
                 borderRadius: '99px',
                 fontFamily: 'var(--font-mono)',
                 fontWeight: 600,
@@ -278,13 +285,13 @@ export default function Home() {
             onClick={() => setIsIngestOpen(true)}
             disabled={isStreaming}
             style={{
-              background: 'rgba(56, 189, 248, 0.08)',
-              border: '1px solid rgba(56, 189, 248, 0.25)',
-              color: 'var(--accent-cyan)',
+              background: 'transparent',
+              border: '1px solid var(--border-color)',
+              color: 'var(--text-secondary)',
               borderRadius: 'var(--radius-sm)',
               padding: '5px 12px',
               fontSize: '12px',
-              fontWeight: 600,
+              fontWeight: 500,
               cursor: isStreaming ? 'not-allowed' : 'pointer',
               display: 'flex',
               alignItems: 'center',
@@ -306,6 +313,26 @@ export default function Home() {
             }}
             disabled={isStreaming}
           />
+
+          {/* Theme Toggle Button (Light/Dark) */}
+          <button
+            onClick={toggleTheme}
+            title={theme === 'dark' ? 'Switch to Light mode' : 'Switch to Dark mode'}
+            style={{
+              background: 'transparent',
+              border: '1px solid var(--border-color)',
+              color: 'var(--text-secondary)',
+              borderRadius: 'var(--radius-sm)',
+              padding: '6px 8px',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              transition: 'all 0.15s ease',
+            }}
+          >
+            {theme === 'dark' ? <Sun size={14} /> : <Moon size={14} />}
+          </button>
         </div>
       </header>
 
@@ -332,60 +359,40 @@ export default function Home() {
       <main style={{ flex: 1, overflowY: 'auto', display: 'flex', flexDirection: 'column' }}>
         {messages.length === 0 ? (
           <div style={{ margin: 'auto', padding: '40px 24px', maxWidth: '680px', textAlign: 'center' }}>
-            {/* Clean Hero Badge */}
-            <div style={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: '6px',
-              padding: '4px 12px',
-              borderRadius: '99px',
-              background: 'rgba(56, 189, 248, 0.08)',
-              border: '1px solid rgba(56, 189, 248, 0.25)',
-              color: 'var(--accent-cyan)',
-              fontSize: '12px',
-              fontWeight: 500,
-              marginBottom: '20px',
-            }}>
-              <Sparkles size={13} />
-              <span>Hybrid Vector &amp; AST Code Search</span>
-            </div>
-
             <h1 style={{
               fontSize: '28px',
-              fontWeight: 700,
-              marginBottom: '12px',
-              letterSpacing: '-0.03em',
-              color: '#fff',
+              fontWeight: 600,
+              marginBottom: '10px',
+              letterSpacing: '-0.02em',
+              color: 'var(--text-primary)',
             }}>
-              Ask anything about <span style={{ color: 'var(--accent-cyan)' }}>{repoName}</span>
+              What can I help you explore in {repoName}?
             </h1>
 
             <p style={{
               color: 'var(--text-secondary)',
-              fontSize: '14.5px',
-              maxWidth: '520px',
+              fontSize: '14px',
+              maxWidth: '500px',
               margin: '0 auto 28px',
-              lineHeight: 1.6,
+              lineHeight: 1.5,
             }}>
-              Grounded answers with exact line numbers, source snippets, and cross-encoder re-ranking.
+              Grounded answers with cited code snippets, AST parsing, and cross-encoder re-ranking.
             </p>
 
-            {/* Quick Ingest Card */}
             <div style={{
               display: 'flex',
               justifyContent: 'center',
               alignItems: 'center',
-              gap: '12px',
             }}>
               <button
                 onClick={() => setIsIngestOpen(true)}
                 disabled={isStreaming}
                 style={{
-                  background: 'rgba(255, 255, 255, 0.04)',
+                  background: 'var(--bg-card)',
                   border: '1px solid var(--border-color)',
                   color: 'var(--text-secondary)',
-                  borderRadius: 'var(--radius-md)',
-                  padding: '10px 18px',
+                  borderRadius: 'var(--radius-pill)',
+                  padding: '8px 18px',
                   fontSize: '13px',
                   fontWeight: 500,
                   cursor: isStreaming ? 'not-allowed' : 'pointer',
@@ -395,14 +402,14 @@ export default function Home() {
                   transition: 'all 0.15s ease',
                 }}
               >
-                <PlusCircle size={15} color="var(--accent-cyan)" />
-                <span>Ingest another repository</span>
+                <PlusCircle size={14} color="var(--accent-cyan)" />
+                <span>Switch to another repository</span>
                 <ArrowRight size={13} color="var(--text-muted)" />
               </button>
             </div>
           </div>
         ) : (
-          <div style={{ paddingBottom: '24px' }}>
+          <div style={{ paddingBottom: '32px' }}>
             {messages.map((msg) => (
               <MessageBubble key={msg.id} message={msg} repoName={repoName} />
             ))}
@@ -411,12 +418,12 @@ export default function Home() {
         )}
       </main>
 
-      {/* Bottom Query Input Box */}
-      <footer className="glass-panel" style={{
-        padding: '16px 24px',
-        borderTop: '1px solid var(--border-color)',
+      {/* Bottom Floating Prompt Bar (ChatGPT / Notion style) */}
+      <footer style={{
+        padding: '16px 20px 24px',
+        background: 'var(--bg-main)',
       }}>
-        <div style={{ maxWidth: '860px', margin: '0 auto' }}>
+        <div style={{ maxWidth: '768px', margin: '0 auto' }}>
           <form
             onSubmit={(e) => {
               e.preventDefault();
@@ -425,20 +432,20 @@ export default function Home() {
             style={{
               display: 'flex',
               alignItems: 'center',
-              background: 'rgba(255, 255, 255, 0.02)',
+              background: 'var(--bg-input)',
               border: '1px solid var(--border-color)',
-              borderRadius: 'var(--radius-md)',
-              padding: '6px 12px',
-              gap: '8px',
-              boxShadow: 'var(--shadow-sm)',
-              transition: 'border-color 0.15s ease, box-shadow 0.15s ease',
+              borderRadius: '24px',
+              padding: '8px 14px 8px 18px',
+              gap: '10px',
+              boxShadow: 'var(--shadow-input)',
+              transition: 'all 0.15s ease',
             }}
           >
             <input
               type="text"
               value={input}
               onChange={(e) => setInput(e.target.value)}
-              placeholder={`Ask a question about ${repoName} (e.g. 'How is authentication handled?')`}
+              placeholder={`Message RepoMind about ${repoName}…`}
               disabled={isStreaming}
               autoFocus
               style={{
@@ -446,47 +453,38 @@ export default function Home() {
                 background: 'transparent',
                 border: 'none',
                 color: 'var(--text-primary)',
-                fontSize: '13.5px',
+                fontSize: '14px',
                 outline: 'none',
-                padding: '6px 4px',
               }}
             />
             <button
               type="submit"
               disabled={isStreaming || !input.trim()}
               style={{
-                background: isStreaming || !input.trim() ? 'rgba(255, 255, 255, 0.05)' : 'var(--accent-cyan)',
-                color: isStreaming || !input.trim() ? 'var(--text-muted)' : '#000',
+                width: '32px',
+                height: '32px',
+                borderRadius: '50%',
+                background: isStreaming || !input.trim() ? 'transparent' : 'var(--text-primary)',
+                color: isStreaming || !input.trim() ? 'var(--text-muted)' : 'var(--bg-main)',
                 border: 'none',
-                borderRadius: 'var(--radius-sm)',
-                padding: '7px 14px',
-                fontSize: '12.5px',
-                fontWeight: 600,
                 cursor: isStreaming || !input.trim() ? 'not-allowed' : 'pointer',
                 display: 'flex',
                 alignItems: 'center',
-                gap: '6px',
+                justifyContent: 'center',
                 transition: 'all 0.15s ease',
+                flexShrink: 0,
               }}
             >
-              {isStreaming ? <RefreshCw size={13} className="animate-pulse-slow" /> : <Send size={13} />}
-              <span>{isStreaming ? 'Streaming' : 'Ask'}</span>
+              {isStreaming ? <RefreshCw size={14} className="animate-pulse-slow" /> : <Send size={14} />}
             </button>
           </form>
           <div style={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
+            textAlign: 'center',
             fontSize: '11px',
             color: 'var(--text-muted)',
             marginTop: '8px',
-            padding: '0 4px',
           }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-              <ShieldCheck size={12} color="var(--accent-emerald)" />
-              <span>Anti-hallucination guardrail active &bull; Hybrid BM25 + Qdrant</span>
-            </div>
-            <span>Enter to submit</span>
+            RepoMind answers can be cross-referenced with cited repository files.
           </div>
         </div>
       </footer>
