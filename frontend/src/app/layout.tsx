@@ -1,14 +1,5 @@
 import type { Metadata } from 'next';
-import { EB_Garamond } from 'next/font/google';
 import './globals.css';
-
-const ebGaramond = EB_Garamond({
-  subsets: ['latin'],
-  weight: ['400', '500', '600', '700', '800'],
-  style: ['normal', 'italic'],
-  display: 'swap',
-  variable: '--font-eb-garamond',
-});
 
 export const metadata: Metadata = {
   title: 'RepoMind — Agentic Codebase Assistant',
@@ -21,8 +12,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={ebGaramond.variable}>
-      <body className={ebGaramond.className}>{children}</body>
+    <html lang="en">
+      <head>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+      </head>
+      <body>{children}</body>
     </html>
   );
 }
