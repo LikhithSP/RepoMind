@@ -396,38 +396,7 @@ export default function Home() {
               Accurate, verified answers grounded directly in the codebase with exact file lines, function definitions, and interactive citations.
             </p>
 
-            {/* Quick Ingest Button */}
-            <div style={{
-              display: 'flex',
-              justifyContent: 'center',
-              alignItems: 'center',
-              marginBottom: '48px',
-            }}>
-              <button
-                onClick={() => setIsIngestOpen(true)}
-                disabled={isStreaming}
-                style={{
-                  background: 'rgba(255, 255, 255, 0.04)',
-                  border: '1px solid var(--border-color)',
-                  color: 'var(--text-secondary)',
-                  borderRadius: 'var(--radius-md)',
-                  padding: '9px 18px',
-                  fontSize: '13px',
-                  fontWeight: 500,
-                  cursor: isStreaming ? 'not-allowed' : 'pointer',
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: '8px',
-                  transition: 'all 0.15s ease',
-                }}
-              >
-                <PlusCircle size={15} color="var(--accent-cyan)" />
-                <span>Ingest another repository</span>
-                <ArrowRight size={13} color="var(--text-muted)" />
-              </button>
-            </div>
-
-            {/* Centered Search Bar positioned right below Ingest button */}
+            {/* Centered Search Bar */}
             <div className="search-container-transition" style={{ width: '100%', maxWidth: '700px' }}>
               <form
                 onSubmit={(e) => {
