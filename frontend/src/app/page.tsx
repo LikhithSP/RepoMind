@@ -332,24 +332,6 @@ export default function Home() {
       <main style={{ flex: 1, overflowY: 'auto', display: 'flex', flexDirection: 'column' }}>
         {messages.length === 0 ? (
           <div style={{ margin: 'auto', padding: '40px 24px', maxWidth: '680px', textAlign: 'center' }}>
-            {/* Clean Hero Badge */}
-            <div style={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: '6px',
-              padding: '4px 12px',
-              borderRadius: '99px',
-              background: 'rgba(56, 189, 248, 0.08)',
-              border: '1px solid rgba(56, 189, 248, 0.25)',
-              color: 'var(--accent-cyan)',
-              fontSize: '12px',
-              fontWeight: 500,
-              marginBottom: '20px',
-            }}>
-              <Sparkles size={13} />
-              <span>Hybrid Vector &amp; AST Code Search</span>
-            </div>
-
             <h1 style={{
               fontSize: '28px',
               fontWeight: 700,
