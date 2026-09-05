@@ -11,7 +11,8 @@ interface SourceSnippetProps {
 export const SourceSnippet: React.FC<SourceSnippetProps> = ({ chunk, repoName = "psf/requests", sourceIndex }) => {
   const [copied, setCopied] = useState(false);
 
-  const handleCopy = () => {
+  const handleCopy = (e: React.MouseEvent) => {
+    e.stopPropagation();
     navigator.clipboard.writeText(chunk.text);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
@@ -23,37 +24,43 @@ export const SourceSnippet: React.FC<SourceSnippetProps> = ({ chunk, repoName = 
   };
 
   return (
-    <div style={{
-      background: 'var(--code-bg)',
-      border: '1px solid var(--border-color)',
-      borderRadius: 'var(--radius-sm)',
-      overflow: 'hidden',
-      marginTop: '8px',
-      fontFamily: 'var(--font-mono)',
-      fontSize: '11px',
-      boxShadow: 'var(--shadow-sm)',
-    }}>
+    <div
+      className="animate-fade-in"
+      style={{
+        background: 'var(--code-bg)',
+        border: '1px solid var(--border-color)',
+        borderRadius: 'var(--radius-md)',
+        overflow: 'hidden',
+        marginTop: '10px',
+        fontFamily: 'var(--font-mono)',
+        fontSize: '12px',
+        boxShadow: 'var(--shadow-md)',
+      }}
+    >
       <div style={{
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'space-between',
-        padding: '6px 12px',
-        background: 'rgba(255, 255, 255, 0.02)',
+        padding: '8px 14px',
+        background: 'var(--bg-surface)',
         borderBottom: '1px solid var(--border-color)',
       }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
           <span style={{
-            background: 'rgba(56, 189, 248, 0.15)',
+            background: 'var(--accent-cyan-subtle)',
             color: 'var(--accent-cyan)',
-            padding: '1px 6px',
+            padding: '2px 7px',
             borderRadius: '4px',
-            fontSize: '10px',
+            fontSize: '11px',
             fontWeight: 700,
           }}>
-            [{sourceIndex}]
+            Source [{sourceIndex}]
           </span>
-          <span style={{ color: 'var(--text-secondary)', fontWeight: 500 }}>
-            {chunk.file_path} <span style={{ color: 'var(--text-muted)' }}>(L{chunk.start_line}–{chunk.end_line})</span>
+          <span style={{ color: 'var(--text-primary)', fontWeight: 600 }}>
+            {chunk.file_path}
+          </span>
+          <span style={{ color: 'var(--text-muted)', fontSize: '11px' }}>
+            Lines {chunk.start_line}–{chunk.end_line}
           </span>
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
@@ -62,7 +69,7 @@ export const SourceSnippet: React.FC<SourceSnippetProps> = ({ chunk, repoName = 
             style={{
               background: 'transparent',
               border: 'none',
-              color: 'var(--text-muted)',
+              color: 'var(--text-secondary)',
               cursor: 'pointer',
               display: 'flex',
               alignItems: 'center',
@@ -71,7 +78,7 @@ export const SourceSnippet: React.FC<SourceSnippetProps> = ({ chunk, repoName = 
               transition: 'color 0.15s ease',
             }}
           >
-            {copied ? <Check size={11} color="var(--accent-emerald)" /> : <Copy size={11} />}
+            {copied ? <Check size={12} color="var(--accent-emerald)" /> : <Copy size={12} />}
             <span>{copied ? 'Copied' : 'Copy'}</span>
           </button>
           <a
@@ -81,24 +88,24 @@ export const SourceSnippet: React.FC<SourceSnippetProps> = ({ chunk, repoName = 
             style={{
               display: 'flex',
               alignItems: 'center',
-              gap: '3px',
+              gap: '4px',
               color: 'var(--accent-cyan)',
               fontSize: '11px',
               fontWeight: 500,
             }}
           >
-            GitHub <ExternalLink size={10} />
+            GitHub <ExternalLink size={11} />
           </a>
         </div>
       </div>
       <pre style={{
-        padding: '10px 12px',
+        padding: '12px 16px',
         overflowX: 'auto',
         color: 'var(--text-primary)',
-        lineHeight: 1.5,
-        maxHeight: '190px',
+        lineHeight: 1.6,
+        maxHeight: '220px',
         margin: 0,
-        fontSize: '11.5px',
+        fontSize: '12px',
         background: 'var(--code-bg)',
         border: 'none',
         borderRadius: 0,
@@ -124,7 +131,7 @@ export const SourcePanel: React.FC<SourcePanelProps> = ({ sources, repoName }) =
       case 'code': return <Code2 size={12} color="var(--accent-cyan)" />;
       case 'doc': return <FileText size={12} color="var(--accent-emerald)" />;
       case 'issue': return <AlertCircle size={12} color="var(--accent-amber)" />;
-      default: return <Code2 size={12} />;
+      default: return <Code2 size={12} color="var(--accent-cyan)" />;
     }
   };
 
@@ -133,39 +140,28 @@ export const SourcePanel: React.FC<SourcePanelProps> = ({ sources, repoName }) =
   };
 
   return (
-    <div style={{
-      padding: '12px 16px',
-      background: 'var(--bg-card)',
-      border: '1px solid var(--border-color)',
-      borderRadius: 'var(--radius-md)',
-      fontSize: '12px',
-    }}>
-      {/* Minimal Header */}
+    <div style={{ marginTop: '16px' }}>
+      {/* Sleek Minimalist Label */}
       <div style={{
         display: 'flex',
         alignItems: 'center',
-        justifyContent: 'space-between',
-        marginBottom: '10px',
+        gap: '6px',
+        marginBottom: '8px',
+        fontSize: '11px',
+        fontWeight: 600,
+        color: 'var(--text-muted)',
+        letterSpacing: '0.04em',
+        textTransform: 'uppercase',
       }}>
-        <div style={{
-          display: 'flex',
-          alignItems: 'center',
-          gap: '6px',
-          fontSize: '11px',
-          fontWeight: 600,
-          color: 'var(--text-muted)',
-          letterSpacing: '0.04em',
-        }}>
-          <BookOpen size={13} color="var(--accent-cyan)" />
-          <span>CITATIONS ({sources.length})</span>
-        </div>
+        <BookOpen size={12} color="var(--accent-cyan)" />
+        <span>Sources ({sources.length})</span>
       </div>
 
-      {/* Small compact pills */}
+      {/* Perplexity/Google-style horizontal card badges */}
       <div style={{
         display: 'flex',
         flexWrap: 'wrap',
-        gap: '6px',
+        gap: '8px',
         alignItems: 'center',
       }}>
         {sources.map((s, idx) => {
@@ -178,38 +174,63 @@ export const SourcePanel: React.FC<SourcePanelProps> = ({ sources, repoName }) =
               style={{
                 display: 'inline-flex',
                 alignItems: 'center',
-                gap: '5px',
-                padding: '4px 10px',
-                borderRadius: 'var(--radius-sm)',
-                background: isSelected ? 'var(--accent-cyan-subtle)' : 'var(--bg-surface)',
+                gap: '7px',
+                padding: '5px 12px',
+                borderRadius: '999px',
+                background: isSelected ? 'var(--accent-cyan-subtle)' : 'var(--bg-card)',
                 border: isSelected ? '1px solid var(--accent-cyan)' : '1px solid var(--border-color)',
                 color: isSelected ? 'var(--accent-cyan)' : 'var(--text-primary)',
-                fontSize: '11px',
-                fontFamily: 'var(--font-mono)',
+                fontSize: '12px',
+                fontFamily: 'var(--font-sans)',
+                fontWeight: 500,
                 cursor: 'pointer',
-                transition: 'all 0.15s ease',
+                transition: 'all 0.2s cubic-bezier(0.16, 1, 0.3, 1)',
+                boxShadow: isSelected ? '0 0 12px var(--accent-cyan-glow)' : 'var(--shadow-sm)',
               }}
               title={`${s.file_path} (Lines ${s.start_line}-${s.end_line})`}
             >
               <span style={{
-                fontSize: '10px',
+                fontSize: '10.5px',
                 fontWeight: 700,
+                fontFamily: 'var(--font-mono)',
                 color: isSelected ? 'var(--accent-cyan)' : 'var(--text-muted)',
               }}>
-                [{idx + 1}]
+                {idx + 1}
               </span>
-              {getTypeIcon(s.type)}
-              <span style={{ fontWeight: 500 }}>{fileName}</span>
-              <span style={{ color: 'var(--text-muted)', fontSize: '10px' }}>
+              <span style={{
+                display: 'flex',
+                alignItems: 'center',
+                opacity: 0.85,
+              }}>
+                {getTypeIcon(s.type)}
+              </span>
+              <span style={{
+                fontWeight: 500,
+                maxWidth: '180px',
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+                whiteSpace: 'nowrap',
+              }}>
+                {fileName}
+              </span>
+              <span style={{
+                color: 'var(--text-muted)',
+                fontSize: '10.5px',
+                fontFamily: 'var(--font-mono)',
+              }}>
                 L{s.start_line}
               </span>
-              {isSelected ? <ChevronUp size={11} /> : <ChevronDown size={11} />}
+              {isSelected ? (
+                <ChevronUp size={12} color="var(--accent-cyan)" />
+              ) : (
+                <ChevronDown size={12} color="var(--text-muted)" />
+              )}
             </button>
           );
         })}
       </div>
 
-      {/* Snippet Preview */}
+      {/* Expanded Snippet Inspector */}
       {selectedIdx !== null && sources[selectedIdx] && (
         <SourceSnippet
           chunk={sources[selectedIdx]}
