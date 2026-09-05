@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useRef, useEffect } from 'react';
-import { Send, Terminal, GitBranch, RefreshCw, Layers, PlusCircle, ArrowRight, ShieldCheck, Sparkles, Database, Sun, Moon } from 'lucide-react';
+import { Send, Terminal, GitBranch, RefreshCw, Layers, PlusCircle, Plus, ArrowRight, ShieldCheck, Sparkles, Database, Sun, Moon } from 'lucide-react';
 import { ChatMessage, SourceChunk, TraceInfo } from '../lib/types';
 import { MessageBubble } from '../components/MessageBubble';
 import { ModelSelector } from '../components/ModelSelector';
@@ -452,28 +452,28 @@ export default function Home() {
                   e.currentTarget.style.borderColor = 'var(--input-border)';
                 }}
               >
-                {/* '+' Ingest Repo Action Button */}
+                {/* Clean Simple '+' Ingest Action Button */}
                 <button
                   type="button"
                   onClick={() => setIsIngestOpen(true)}
                   disabled={isStreaming}
                   title="Ingest new repository (start new session)"
                   style={{
-                    background: 'var(--accent-cyan-subtle)',
-                    border: '1px solid var(--accent-cyan)',
-                    color: 'var(--accent-cyan)',
-                    width: '28px',
-                    height: '28px',
-                    borderRadius: '50%',
+                    background: 'transparent',
+                    border: 'none',
+                    color: 'var(--text-secondary)',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
+                    padding: '4px',
                     cursor: isStreaming ? 'not-allowed' : 'pointer',
                     flexShrink: 0,
-                    transition: 'all 0.15s ease',
+                    transition: 'color 0.15s ease, transform 0.1s ease',
                   }}
+                  onMouseEnter={(e) => e.currentTarget.style.color = 'var(--text-primary)'}
+                  onMouseLeave={(e) => e.currentTarget.style.color = 'var(--text-secondary)'}
                 >
-                  <PlusCircle size={15} />
+                  <Plus size={18} strokeWidth={2} />
                 </button>
 
                 <input
@@ -585,28 +585,28 @@ export default function Home() {
                 e.currentTarget.style.borderColor = 'var(--input-border)';
               }}
             >
-              {/* '+' Ingest Repo Action Button */}
+              {/* Clean Simple '+' Ingest Action Button */}
               <button
                 type="button"
                 onClick={() => setIsIngestOpen(true)}
                 disabled={isStreaming}
                 title="Ingest new repository (start new session)"
                 style={{
-                  background: 'var(--accent-cyan-subtle)',
-                  border: '1px solid var(--accent-cyan)',
-                  color: 'var(--accent-cyan)',
-                  width: '28px',
-                  height: '28px',
-                  borderRadius: '50%',
+                  background: 'transparent',
+                  border: 'none',
+                  color: 'var(--text-secondary)',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
+                  padding: '4px',
                   cursor: isStreaming ? 'not-allowed' : 'pointer',
                   flexShrink: 0,
-                  transition: 'all 0.15s ease',
+                  transition: 'color 0.15s ease, transform 0.1s ease',
                 }}
+                onMouseEnter={(e) => e.currentTarget.style.color = 'var(--text-primary)'}
+                onMouseLeave={(e) => e.currentTarget.style.color = 'var(--text-secondary)'}
               >
-                <PlusCircle size={15} />
+                <Plus size={18} strokeWidth={2} />
               </button>
 
               <input
