@@ -50,17 +50,17 @@
   --bg-card: #f1f5f9;
   --bg-card-hover: #e2e8f0;
   --bg-muted: #e2e8f0;
-  --border-color: rgba(0, 0, 0, 0.08);
-  --border-subtle: rgba(0, 0, 0, 0.04);
+  --border-color: rgba(15, 23, 42, 0.08);
+  --border-subtle: rgba(15, 23, 42, 0.04);
   --border-focus: rgba(2, 132, 199, 0.4);
   
   --text-primary: #0f172a;
-  --text-secondary: #475569;
-  --text-muted: #94a3b8;
+  --text-secondary: #334155;
+  --text-muted: #64748b;
   
   --accent-cyan: #0284c7;
-  --accent-cyan-subtle: rgba(2, 132, 199, 0.08);
-  --accent-cyan-glow: rgba(2, 132, 199, 0.15);
+  --accent-cyan-subtle: rgba(2, 132, 199, 0.1);
+  --accent-cyan-glow: rgba(2, 132, 199, 0.2);
   --accent-emerald: #059669;
   --accent-emerald-subtle: rgba(5, 150, 105, 0.1);
   --accent-amber: #d97706;

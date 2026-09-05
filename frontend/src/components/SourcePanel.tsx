@@ -94,12 +94,12 @@ export const SourceSnippet: React.FC<SourceSnippetProps> = ({ chunk, repoName = 
       <pre style={{
         padding: '10px 12px',
         overflowX: 'auto',
-        color: '#e2e8f0',
+        color: 'var(--text-primary)',
         lineHeight: 1.5,
         maxHeight: '190px',
         margin: 0,
         fontSize: '11.5px',
-        background: 'transparent',
+        background: 'var(--code-bg)',
         border: 'none',
         borderRadius: 0,
       }}>
@@ -134,8 +134,8 @@ export const SourcePanel: React.FC<SourcePanelProps> = ({ sources, repoName }) =
 
   return (
     <div style={{
-      padding: '10px 14px',
-      background: 'rgba(255, 255, 255, 0.02)',
+      padding: '12px 16px',
+      background: 'var(--bg-card)',
       border: '1px solid var(--border-color)',
       borderRadius: 'var(--radius-md)',
       fontSize: '12px',
@@ -145,7 +145,7 @@ export const SourcePanel: React.FC<SourcePanelProps> = ({ sources, repoName }) =
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'space-between',
-        marginBottom: '8px',
+        marginBottom: '10px',
       }}>
         <div style={{
           display: 'flex',
@@ -179,11 +179,11 @@ export const SourcePanel: React.FC<SourcePanelProps> = ({ sources, repoName }) =
                 display: 'inline-flex',
                 alignItems: 'center',
                 gap: '5px',
-                padding: '3px 9px',
+                padding: '4px 10px',
                 borderRadius: 'var(--radius-sm)',
-                background: isSelected ? 'rgba(56, 189, 248, 0.15)' : 'rgba(255, 255, 255, 0.03)',
+                background: isSelected ? 'var(--accent-cyan-subtle)' : 'var(--bg-surface)',
                 border: isSelected ? '1px solid var(--accent-cyan)' : '1px solid var(--border-color)',
-                color: isSelected ? 'var(--accent-cyan)' : 'var(--text-secondary)',
+                color: isSelected ? 'var(--accent-cyan)' : 'var(--text-primary)',
                 fontSize: '11px',
                 fontFamily: 'var(--font-mono)',
                 cursor: 'pointer',

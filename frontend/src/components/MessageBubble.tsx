@@ -61,8 +61,8 @@ export const MessageBubble: React.FC<MessageBubbleProps> = ({ message, repoName 
         display: 'flex',
         gap: '16px',
         padding: '24px 28px',
-        background: isUser ? 'transparent' : 'rgba(255, 255, 255, 0.015)',
-        borderBottom: '1px solid var(--border-subtle)',
+        background: isUser ? 'transparent' : 'var(--bg-surface)',
+        borderBottom: '1px solid var(--border-color)',
         maxWidth: '920px',
         margin: '0 auto',
         width: '100%',
@@ -74,14 +74,14 @@ export const MessageBubble: React.FC<MessageBubbleProps> = ({ message, repoName 
         width: '32px',
         height: '32px',
         borderRadius: 'var(--radius-sm)',
-        background: isUser ? 'var(--bg-surface)' : 'rgba(56, 189, 248, 0.1)',
-        border: `1px solid ${isUser ? 'var(--border-color)' : 'rgba(56, 189, 248, 0.25)'}`,
+        background: isUser ? 'var(--bg-card)' : 'var(--accent-cyan-subtle)',
+        border: `1px solid ${isUser ? 'var(--border-color)' : 'var(--accent-cyan)'}`,
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
         flexShrink: 0,
         marginTop: '2px',
-        boxShadow: isUser ? 'none' : '0 0 16px -2px rgba(56, 189, 248, 0.15)',
+        boxShadow: isUser ? 'none' : '0 0 16px -2px var(--accent-cyan-glow)',
       }}>
         {isUser ? <User size={15} color="var(--text-secondary)" /> : <Sparkles size={15} color="var(--accent-cyan)" />}
       </div>
@@ -96,13 +96,13 @@ export const MessageBubble: React.FC<MessageBubbleProps> = ({ message, repoName 
           fontSize: '12.5px',
         }}>
           <span style={{ fontWeight: 600, color: isUser ? 'var(--text-primary)' : 'var(--accent-cyan)', letterSpacing: '-0.01em' }}>
-            {isUser ? 'You' : 'CodeRAG Assistant'}
+            {isUser ? 'You' : 'RepoMind Assistant'}
           </span>
           {!isUser && (
             <span style={{
               fontSize: '10px',
               fontFamily: 'var(--font-mono)',
-              background: 'rgba(255, 255, 255, 0.04)',
+              background: 'var(--bg-card)',
               border: '1px solid var(--border-color)',
               color: 'var(--text-muted)',
               padding: '1px 6px',
@@ -115,7 +115,7 @@ export const MessageBubble: React.FC<MessageBubbleProps> = ({ message, repoName 
 
         {/* Message Body */}
         <div style={{
-          color: isUser ? '#f1f5f9' : '#cbd5e1',
+          color: isUser ? 'var(--text-primary)' : 'var(--text-secondary)',
           lineHeight: '1.7',
           fontSize: '14px',
         }}>

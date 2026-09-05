@@ -14,7 +14,7 @@ export const TraceView: React.FC<TraceViewProps> = ({ trace }) => {
   return (
     <div style={{
       marginTop: '12px',
-      background: 'rgba(255, 255, 255, 0.015)',
+      background: 'var(--bg-card)',
       border: '1px solid var(--border-color)',
       borderRadius: 'var(--radius-md)',
       padding: '8px 12px',
@@ -34,12 +34,12 @@ export const TraceView: React.FC<TraceViewProps> = ({ trace }) => {
       >
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
           <Activity size={13} color="var(--accent-cyan)" />
-          <span style={{ fontWeight: 600, color: 'var(--text-secondary)', letterSpacing: '0.02em' }}>
+          <span style={{ fontWeight: 600, color: 'var(--text-primary)', letterSpacing: '0.02em' }}>
             PIPELINE TRACE
           </span>
           <span style={{
             fontSize: '10px',
-            background: 'rgba(255, 255, 255, 0.04)',
+            background: 'var(--bg-surface)',
             border: '1px solid var(--border-color)',
             color: 'var(--accent-cyan)',
             padding: '1px 5px',
