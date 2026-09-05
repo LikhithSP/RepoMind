@@ -1,24 +1,17 @@
 # RepoMind — Agentic RAG Project for Codebases
 
-[![RepoMind Eval Suite](https://github.com/your-org/repomind/actions/workflows/eval.yml/badge.svg)](https://github.com/your-org/repomind/actions)
 [![Python 3.12](https://img.shields.io/badge/python-3.12-blue.svg)](https://www.python.org/downloads/)
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.110+-009688.svg)](https://fastapi.tiangolo.com)
 [![Qdrant](https://img.shields.io/badge/Qdrant-Vector%20DB-dc2626.svg)](https://qdrant.tech)
 [![Next.js](https://img.shields.io/badge/Next.js-14-black.svg)](https://nextjs.org)
 
-**RepoMind** is an agentic, production-grade **RAG Project** built specifically for engineering teams and deep codebase exploration. It ingests any public or private Git repository (parsing AST-chunked syntax trees, markdown documentation hierarchies, and GitHub issue threads), conducts **hybrid retrieval** (BM25 sparse keyword matching + BAAI/bge-small-en-v1.5 dense vector embeddings fused via Reciprocal Rank Fusion), refines candidate code chunks with a **cross-encoder re-ranker** (`ms-marco-MiniLM-L-6-v2`), and streams answers in real time with interactive citations, exact `[file:line-range]` references, and anti-hallucination guardrails.
-
----
-
-## Preview
-
 <div align="center">
   <img src="./preview%201.png" alt="RepoMind Landing Page" width="100%" />
-  <p><em>RepoMind developer-centric landing interface with instant repository ingestion and model switching</em></p>
   <br />
   <img src="./preview%202.png" alt="RepoMind Grounded Codebase Answer with Citations" width="100%" />
-  <p><em>Streaming responses with interactive, syntax-highlighted citations grounded directly in repository files</em></p>
 </div>
+
+**RepoMind** is an agentic, production-grade **RAG Project** built specifically for engineering teams and deep codebase exploration. It ingests any public or private Git repository (parsing AST-chunked syntax trees, markdown documentation hierarchies, and GitHub issue threads), conducts **hybrid retrieval** (BM25 sparse keyword matching + BAAI/bge-small-en-v1.5 dense vector embeddings fused via Reciprocal Rank Fusion), refines candidate code chunks with a **cross-encoder re-ranker** (`ms-marco-MiniLM-L-6-v2`), and streams answers in real time with interactive citations, exact `[file:line-range]` references, and anti-hallucination guardrails.
 
 ---
 
