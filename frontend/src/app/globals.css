@@ -1,70 +1,77 @@
 :root {
-  /* ChatGPT & Notion inspired clean dark theme (default) */
-  --bg-main: #212121;
-  --bg-sidebar: #171717;
-  --bg-surface: #2f2f2f;
-  --bg-card: #282828;
-  --bg-card-hover: #333333;
-  --bg-input: #2f2f2f;
-  --border-color: rgba(255, 255, 255, 0.1);
-  --border-subtle: rgba(255, 255, 255, 0.06);
-  --border-focus: rgba(255, 255, 255, 0.25);
+  /* Default Dark Mode (Zinc / Slate Deep Theme) */
+  --bg-main: #090a0f;
+  --bg-surface: #0f1219;
+  --bg-card: #151923;
+  --bg-card-hover: #1c2230;
+  --bg-muted: #1e2433;
+  --border-color: rgba(255, 255, 255, 0.08);
+  --border-subtle: rgba(255, 255, 255, 0.04);
+  --border-focus: rgba(56, 189, 248, 0.4);
   
-  --text-primary: #ececec;
-  --text-secondary: #b4b4b4;
-  --text-muted: #8e8e8e;
+  --text-primary: #f8fafc;
+  --text-secondary: #94a3b8;
+  --text-muted: #64748b;
   
-  --accent-cyan: #10a37f; /* OpenAI signature emerald */
-  --accent-cyan-subtle: rgba(16, 163, 127, 0.15);
-  --accent-cyan-glow: rgba(16, 163, 127, 0.25);
-  --accent-emerald: #10a37f;
-  --accent-amber: #e3a018;
-  --accent-rose: #ef4444;
+  --accent-cyan: #38bdf8;
+  --accent-cyan-subtle: rgba(56, 189, 248, 0.1);
+  --accent-cyan-glow: rgba(56, 189, 248, 0.2);
+  --accent-emerald: #10b981;
+  --accent-emerald-subtle: rgba(16, 185, 129, 0.12);
+  --accent-amber: #f59e0b;
+  --accent-rose: #f43f5e;
+  --accent-indigo: #818cf8;
   
-  --code-bg: #181818;
+  --code-bg: #07080c;
+  --glass-bg: rgba(15, 18, 25, 0.75);
+  --input-bg: rgba(255, 255, 255, 0.03);
+  --input-border: rgba(255, 255, 255, 0.12);
+  
   --radius-sm: 6px;
   --radius-md: 10px;
   --radius-lg: 14px;
-  --radius-pill: 9999px;
+  --radius-xl: 18px;
   
-  --font-mono: SöhneMono, Monaco, Consolas, "Liberation Mono", "Lucida Console", monospace;
-  --font-sans: Söhne, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  --font-sans: -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
   
-  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.15);
-  --shadow-md: 0 4px 12px -2px rgba(0, 0, 0, 0.25);
-  --shadow-lg: 0 12px 28px -4px rgba(0, 0, 0, 0.35);
-  --shadow-input: 0 2px 6px rgba(0, 0, 0, 0.05), 0 0 0 1px rgba(255, 255, 255, 0.1);
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.2);
+  --shadow-md: 0 4px 12px -2px rgba(0, 0, 0, 0.35);
+  --shadow-lg: 0 12px 30px -4px rgba(0, 0, 0, 0.5);
 }
 
-/* Light Mode: Notion & ChatGPT White Aesthetic */
+/* Light Theme Variables */
 [data-theme="light"] {
-  --bg-main: #ffffff;
-  --bg-sidebar: #f9f9f9;
-  --bg-surface: #f7f7f8;
-  --bg-card: #f4f4f5;
-  --bg-card-hover: #ececee;
-  --bg-input: #ffffff;
-  --border-color: rgba(0, 0, 0, 0.1);
-  --border-subtle: rgba(0, 0, 0, 0.05);
-  --border-focus: rgba(0, 0, 0, 0.3);
+  --bg-main: #f8fafc;
+  --bg-surface: #ffffff;
+  --bg-card: #f1f5f9;
+  --bg-card-hover: #e2e8f0;
+  --bg-muted: #e2e8f0;
+  --border-color: rgba(0, 0, 0, 0.08);
+  --border-subtle: rgba(0, 0, 0, 0.04);
+  --border-focus: rgba(2, 132, 199, 0.4);
   
-  --text-primary: #0d0d0d;
-  --text-secondary: #5d5d5d;
-  --text-muted: #8e8e8e;
+  --text-primary: #0f172a;
+  --text-secondary: #475569;
+  --text-muted: #94a3b8;
   
-  --accent-cyan: #10a37f;
-  --accent-cyan-subtle: rgba(16, 163, 127, 0.1);
-  --accent-cyan-glow: rgba(16, 163, 127, 0.2);
-  --accent-emerald: #10a37f;
+  --accent-cyan: #0284c7;
+  --accent-cyan-subtle: rgba(2, 132, 199, 0.08);
+  --accent-cyan-glow: rgba(2, 132, 199, 0.15);
+  --accent-emerald: #059669;
+  --accent-emerald-subtle: rgba(5, 150, 105, 0.1);
   --accent-amber: #d97706;
-  --accent-rose: #dc2626;
+  --accent-rose: #e11d48;
+  --accent-indigo: #6366f1;
   
-  --code-bg: #f8f8f8;
+  --code-bg: #f8fafc;
+  --glass-bg: rgba(255, 255, 255, 0.85);
+  --input-bg: rgba(0, 0, 0, 0.03);
+  --input-border: rgba(0, 0, 0, 0.12);
   
   --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
   --shadow-md: 0 4px 12px -2px rgba(0, 0, 0, 0.08);
-  --shadow-lg: 0 12px 28px -4px rgba(0, 0, 0, 0.12);
-  --shadow-input: 0 2px 8px rgba(0, 0, 0, 0.08), 0 0 0 1px rgba(0, 0, 0, 0.08);
+  --shadow-lg: 0 12px 30px -4px rgba(0, 0, 0, 0.12);
 }
 
 * {
@@ -77,7 +84,7 @@ body {
   background-color: var(--bg-main);
   color: var(--text-primary);
   font-family: var(--font-sans);
-  font-size: 14.5px;
+  font-size: 14px;
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
   min-height: 100vh;
@@ -92,7 +99,7 @@ a {
 }
 
 a:hover {
-  text-decoration: underline;
+  text-decoration: none;
 }
 
 /* Custom Scrollbars */
@@ -111,9 +118,11 @@ a:hover {
   background: var(--text-muted);
 }
 
-/* ChatGPT/Notion Floating Panels */
+/* Glass & Glow Utility Classes */
 .glass-panel {
-  background: var(--bg-surface);
+  background: var(--glass-bg);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   border: 1px solid var(--border-color);
   transition: background-color 0.2s ease, border-color 0.2s ease;
 }
@@ -126,9 +135,8 @@ pre {
   padding: 14px 16px;
   overflow-x: auto;
   font-family: var(--font-mono);
-  font-size: 13px;
+  font-size: 12.5px;
   line-height: 1.6;
-  color: var(--text-primary);
 }
 
 code {
@@ -158,10 +166,10 @@ pre code {
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(4px); }
+  from { opacity: 0; transform: translateY(6px); }
   to { opacity: 1; transform: translateY(0); }
 }
 
 .animate-fade-in {
-  animation: fadeIn 0.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation: fadeIn 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }

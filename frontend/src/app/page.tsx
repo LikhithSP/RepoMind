@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useRef, useEffect } from 'react';
-import { Send, Terminal, GitBranch, RefreshCw, Layers, PlusCircle, ArrowRight, ShieldCheck, Sparkles, Database } from 'lucide-react';
+import { Send, Terminal, GitBranch, RefreshCw, Layers, PlusCircle, ArrowRight, ShieldCheck, Sparkles, Database, Sun, Moon } from 'lucide-react';
 import { ChatMessage, SourceChunk, TraceInfo } from '../lib/types';
 import { MessageBubble } from '../components/MessageBubble';
 import { ModelSelector } from '../components/ModelSelector';
@@ -11,12 +11,32 @@ export default function Home() {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [input, setInput] = useState('');
   const [isStreaming, setIsStreaming] = useState(false);
+  const [theme, setTheme] = useState<'dark' | 'light'>('dark');
   const [provider, setProvider] = useState('groq');
   const [model, setModel] = useState('qwen/qwen3.8-27b');
   const [repoName, setRepoName] = useState('psf/requests');
   const [commitSha, setCommitSha] = useState('8d3f9b2');
   const [indexedPoints, setIndexedPoints] = useState<number | null>(null);
   const [isIngestOpen, setIsIngestOpen] = useState(false);
+
+  // Initialize theme from localStorage or system preference
+  useEffect(() => {
+    try {
+      const savedTheme = localStorage.getItem('repomind_theme') as 'dark' | 'light' | null;
+      const initial = savedTheme || 'dark';
+      setTheme(initial);
+      document.documentElement.setAttribute('data-theme', initial);
+    } catch (_) {}
+  }, []);
+
+  const toggleTheme = () => {
+    const nextTheme = theme === 'dark' ? 'light' : 'dark';
+    setTheme(nextTheme);
+    document.documentElement.setAttribute('data-theme', nextTheme);
+    try {
+      localStorage.setItem('repomind_theme', nextTheme);
+    } catch (_) {}
+  };
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
@@ -306,6 +326,30 @@ export default function Home() {
             }}
             disabled={isStreaming}
           />
+
+          {/* Dark / Light Mode Toggle */}
+          <button
+            onClick={toggleTheme}
+            title={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}
+            style={{
+              background: 'var(--bg-card)',
+              border: '1px solid var(--border-color)',
+              color: 'var(--text-secondary)',
+              borderRadius: 'var(--radius-sm)',
+              padding: '6px 9px',
+              fontSize: '12px',
+              fontWeight: 500,
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '6px',
+              transition: 'all 0.15s ease',
+            }}
+          >
+            {theme === 'dark' ? <Sun size={14} color="#f59e0b" /> : <Moon size={14} color="var(--accent-cyan)" />}
+            <span style={{ fontSize: '11px', textTransform: 'capitalize' }}>{theme}</span>
+          </button>
         </div>
       </header>
 
@@ -337,7 +381,7 @@ export default function Home() {
               fontWeight: 700,
               marginBottom: '12px',
               letterSpacing: '-0.03em',
-              color: '#fff',
+              color: 'var(--text-primary)',
             }}>
               Ask anything about <span style={{ color: 'var(--accent-cyan)' }}>{repoName}</span>
             </h1>
@@ -349,7 +393,7 @@ export default function Home() {
               margin: '0 auto 28px',
               lineHeight: 1.6,
             }}>
-              Accurate, verified answers grounded directly in the codebase — with exact file lines, function definitions, and interactive citations.
+              Accurate, verified answers grounded directly in the codebase with exact file lines, function definitions, and interactive citations.
             </p>
 
             {/* Quick Ingest Card */}
