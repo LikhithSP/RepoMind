@@ -429,7 +429,7 @@ export default function Home() {
               type="text"
               value={input}
               onChange={(e) => setInput(e.target.value)}
-              placeholder={`Message RepoMind about ${repoName}...`}
+              placeholder={`Ask RepoMind about ${repoName}...`}
               disabled={isStreaming}
               autoFocus
               style={{
