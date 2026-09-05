@@ -294,30 +294,7 @@ export default function Home() {
             )}
           </div>
 
-          {/* Ingest Button */}
-          <button
-            onClick={() => setIsIngestOpen(true)}
-            disabled={isStreaming}
-            style={{
-              background: 'rgba(56, 189, 248, 0.08)',
-              border: '1px solid rgba(56, 189, 248, 0.25)',
-              color: 'var(--accent-cyan)',
-              borderRadius: 'var(--radius-sm)',
-              padding: '5px 12px',
-              fontSize: '12px',
-              fontWeight: 600,
-              cursor: isStreaming ? 'not-allowed' : 'pointer',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '6px',
-              transition: 'all 0.15s ease',
-            }}
-          >
-            <PlusCircle size={13} />
-            <span>Ingest Repo</span>
-          </button>
-
-          {/* Dark / Light Mode Toggle */}
+          {/* Dark / Light Mode Toggle (Icon only) */}
           <button
             onClick={toggleTheme}
             title={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}
@@ -326,19 +303,15 @@ export default function Home() {
               border: '1px solid var(--border-color)',
               color: 'var(--text-secondary)',
               borderRadius: 'var(--radius-sm)',
-              padding: '6px 9px',
-              fontSize: '12px',
-              fontWeight: 500,
+              padding: '7px',
               cursor: 'pointer',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              gap: '6px',
               transition: 'all 0.15s ease',
             }}
           >
-            {theme === 'dark' ? <Sun size={14} color="#f59e0b" /> : <Moon size={14} color="var(--accent-cyan)" />}
-            <span style={{ fontSize: '11px', textTransform: 'capitalize' }}>{theme}</span>
+            {theme === 'dark' ? <Sun size={15} color="#f59e0b" /> : <Moon size={15} color="var(--accent-cyan)" />}
           </button>
         </div>
       </header>
