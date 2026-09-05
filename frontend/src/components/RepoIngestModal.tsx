@@ -140,8 +140,9 @@ export const RepoIngestModal: React.FC<RepoIngestModalProps> = ({ isOpen, onClos
     <div style={{
       position: 'fixed',
       inset: 0,
-      background: 'rgba(0, 0, 0, 0.75)',
-      backdropFilter: 'blur(6px)',
+      background: 'rgba(0, 0, 0, 0.38)',
+      backdropFilter: 'blur(2px)',
+      WebkitBackdropFilter: 'blur(2px)',
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
