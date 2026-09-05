@@ -91,9 +91,7 @@ export const MessageBubble: React.FC<MessageBubbleProps> = ({ message, repoName 
     <div
       className="animate-fade-in"
       style={{
-        display: 'flex',
-        gap: '16px',
-        padding: '24px 24px 32px',
+        padding: '16px 24px 32px',
         background: 'none',
         borderBottom: 'none',
         maxWidth: '860px',
@@ -102,48 +100,7 @@ export const MessageBubble: React.FC<MessageBubbleProps> = ({ message, repoName 
         position: 'relative',
       }}
     >
-      {/* Avatar Icon */}
-      <div style={{
-        width: '32px',
-        height: '32px',
-        borderRadius: 'var(--radius-sm)',
-        background: 'var(--accent-cyan-subtle)',
-        border: '1px solid var(--accent-cyan)',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        flexShrink: 0,
-        marginTop: '2px',
-        boxShadow: '0 0 16px -2px var(--accent-cyan-glow)',
-      }}>
-        <Sparkles size={15} color="var(--accent-cyan)" />
-      </div>
-
-      <div style={{ flex: 1, minWidth: 0 }}>
-        {/* Author Label */}
-        <div style={{
-          display: 'flex',
-          alignItems: 'center',
-          gap: '8px',
-          marginBottom: '10px',
-          fontSize: '12.5px',
-        }}>
-          <span style={{ fontWeight: 600, color: 'var(--accent-cyan)', letterSpacing: '-0.01em' }}>
-            RepoMind Assistant
-          </span>
-          <span style={{
-            fontSize: '10px',
-            fontFamily: 'var(--font-mono)',
-            background: 'var(--bg-card)',
-            border: '1px solid var(--border-color)',
-            color: 'var(--text-muted)',
-            padding: '1px 6px',
-            borderRadius: '4px',
-          }}>
-            AI Grounded
-          </span>
-        </div>
-
+      <div style={{ width: '100%' }}>
         {/* Message Body */}
         <div style={{
           color: 'var(--text-secondary)',
