@@ -390,7 +390,7 @@ export default function Home() {
               color: 'var(--text-secondary)',
               fontSize: '15px',
               maxWidth: '560px',
-              margin: '0 auto 36px',
+              margin: '0 auto 84px',
               lineHeight: 1.65,
             }}>
               Accurate, verified answers grounded directly in the codebase with exact file lines, function definitions, and interactive citations.
