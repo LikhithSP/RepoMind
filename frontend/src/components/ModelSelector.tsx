@@ -6,6 +6,7 @@ interface ModelSelectorProps {
   model: string;
   onChange: (provider: string, model: string) => void;
   disabled?: boolean;
+  compact?: boolean;
 }
 
 const MODELS = [
@@ -16,7 +17,7 @@ const MODELS = [
   { provider: 'anthropic', model: 'claude-3-5-haiku-latest', label: 'Claude 3.5 Haiku', tag: 'Anthropic', isLive: true },
 ];
 
-export const ModelSelector: React.FC<ModelSelectorProps> = ({ provider, model, onChange, disabled }) => {
+export const ModelSelector: React.FC<ModelSelectorProps> = ({ provider, model, onChange, disabled, compact }) => {
   const currentKey = `${provider}:${model}`;
 
   return (
@@ -28,11 +29,11 @@ export const ModelSelector: React.FC<ModelSelectorProps> = ({ provider, model, o
       <div style={{
         display: 'flex',
         alignItems: 'center',
-        gap: '7px',
-        padding: '5px 10px',
-        background: 'rgba(255, 255, 255, 0.03)',
-        border: '1px solid var(--border-color)',
-        borderRadius: 'var(--radius-sm)',
+        gap: '6px',
+        padding: compact ? '4px 8px' : '5px 10px',
+        background: compact ? 'rgba(255, 255, 255, 0.04)' : 'rgba(255, 255, 255, 0.03)',
+        border: compact ? '1px solid var(--border-color)' : '1px solid var(--border-color)',
+        borderRadius: compact ? '999px' : 'var(--radius-sm)',
         transition: 'all 0.15s ease',
         cursor: disabled ? 'not-allowed' : 'pointer',
       }}>

@@ -393,7 +393,7 @@ export default function Home() {
               letterSpacing: '-0.03em',
               color: 'var(--text-primary)',
             }}>
-              Ask anything about <span style={{ color: 'var(--accent-cyan)' }}>{repoName}</span>
+              Ask anything about{' '}<span style={{ color: 'var(--accent-cyan)' }}>{repoName}</span>
             </h1>
 
             <p style={{
@@ -438,7 +438,7 @@ export default function Home() {
             </div>
 
             {/* Centered Search Bar positioned right below Ingest button */}
-            <div className="search-container-transition" style={{ width: '100%', maxWidth: '660px' }}>
+            <div className="search-container-transition" style={{ width: '100%', maxWidth: '700px' }}>
               <form
                 onSubmit={(e) => {
                   e.preventDefault();
@@ -450,7 +450,7 @@ export default function Home() {
                   background: 'var(--input-bg)',
                   border: '1px solid var(--input-border)',
                   borderRadius: '9999px',
-                  padding: '8px 16px 8px 22px',
+                  padding: '6px 10px 6px 20px',
                   gap: '10px',
                   boxShadow: 'var(--input-shadow)',
                   transition: 'border-color 0.2s ease, background 0.2s ease, box-shadow 0.2s ease',
@@ -480,6 +480,19 @@ export default function Home() {
                     fontFamily: 'var(--font-sans)',
                   }}
                 />
+                
+                {/* Embedded Model Selector */}
+                <ModelSelector
+                  provider={provider}
+                  model={model}
+                  compact={true}
+                  onChange={(p, m) => {
+                    setProvider(p);
+                    setModel(m);
+                  }}
+                  disabled={isStreaming}
+                />
+
                 <button
                   type="submit"
                   disabled={isStreaming || !input.trim()}
@@ -534,7 +547,7 @@ export default function Home() {
             borderTop: 'none',
           }}
         >
-          <div style={{ maxWidth: '780px', margin: '0 auto' }}>
+          <div style={{ maxWidth: '820px', margin: '0 auto' }}>
             <form
               onSubmit={(e) => {
                 e.preventDefault();
@@ -546,7 +559,7 @@ export default function Home() {
                 background: 'var(--input-bg)',
                 border: '1px solid var(--input-border)',
                 borderRadius: '9999px',
-                padding: '6px 14px 6px 20px',
+                padding: '6px 10px 6px 20px',
                 gap: '10px',
                 boxShadow: 'var(--input-shadow)',
                 transition: 'border-color 0.2s ease, background 0.2s ease, box-shadow 0.2s ease',
@@ -576,6 +589,19 @@ export default function Home() {
                   fontFamily: 'var(--font-sans)',
                 }}
               />
+
+              {/* Embedded Model Selector */}
+              <ModelSelector
+                provider={provider}
+                model={model}
+                compact={true}
+                onChange={(p, m) => {
+                  setProvider(p);
+                  setModel(m);
+                }}
+                disabled={isStreaming}
+              />
+
               <button
                 type="submit"
                 disabled={isStreaming || !input.trim()}
