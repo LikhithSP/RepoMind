@@ -508,6 +508,15 @@ export default function Home() {
               )}
             </button>
           </form>
+          <div style={{
+            textAlign: 'center',
+            fontSize: '11px',
+            color: 'var(--text-muted)',
+            marginTop: '8px',
+            letterSpacing: '0.01em',
+          }}>
+            RepoMind answers can be cross-referenced with cited repository files.
+          </div>
         </div>
       </div>
     </div>
