@@ -14,8 +14,8 @@ export default function Home() {
   const [theme, setTheme] = useState<'dark' | 'light'>('dark');
   const [provider, setProvider] = useState('groq');
   const [model, setModel] = useState('qwen/qwen3.8-27b');
-  const [repoName, setRepoName] = useState('psf/requests');
-  const [commitSha, setCommitSha] = useState('8d3f9b2');
+  const [repoName, setRepoName] = useState<string | null>(null);
+  const [commitSha, setCommitSha] = useState<string | null>(null);
   const [indexedPoints, setIndexedPoints] = useState<number | null>(null);
   const [isIngestOpen, setIsIngestOpen] = useState(false);
 
@@ -26,6 +26,18 @@ export default function Home() {
       const initial = savedTheme || 'dark';
       setTheme(initial);
       document.documentElement.setAttribute('data-theme', initial);
+    } catch (_) {}
+  }, []);
+
+  // For first-time users, automatically show the ingest repository popup
+  useEffect(() => {
+    try {
+      const hasVisited = localStorage.getItem('repomind_has_visited');
+      const savedRepo = localStorage.getItem('coderag_custom_repo');
+      if (!hasVisited || !savedRepo) {
+        setIsIngestOpen(true);
+        localStorage.setItem('repomind_has_visited', 'true');
+      }
     } catch (_) {}
   }, []);
 
@@ -48,7 +60,7 @@ export default function Home() {
     scrollToBottom();
   }, [messages]);
 
-  // Load custom repository from localStorage if available
+  // Load custom repository chosen by the user from localStorage
   useEffect(() => {
     try {
       const savedRepo = localStorage.getItem('coderag_custom_repo');
@@ -56,42 +68,19 @@ export default function Home() {
         const parsed = JSON.parse(savedRepo);
         if (parsed.repoName) setRepoName(parsed.repoName);
         if (parsed.commitSha) setCommitSha(parsed.commitSha);
-        if (parsed.indexedPoints) setIndexedPoints(parsed.indexedPoints);
+        if (parsed.indexedPoints !== undefined) setIndexedPoints(parsed.indexedPoints);
       }
     } catch (_) {}
-  }, []);
-
-  // Fetch health and index status from backend to sync real active state
-  useEffect(() => {
-    fetch('http://localhost:8000/health')
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.indexed_points !== undefined && data.indexed_points !== null) {
-          setIndexedPoints(data.indexed_points);
-        }
-        if (data.repo_name) {
-          setRepoName(data.repo_name);
-        }
-        if (data.commit_sha) {
-          setCommitSha(data.commit_sha);
-        }
-        // Save synced active repository
-        try {
-          localStorage.setItem('coderag_custom_repo', JSON.stringify({
-            repoName: data.repo_name || repoName,
-            commitSha: data.commit_sha || commitSha,
-            indexedPoints: data.indexed_points
-          }));
-        } catch (_) {}
-      })
-      .catch(() => {
-        // Fallback demo state if backend not running
-      });
   }, []);
 
   const handleSubmit = async (queryText?: string) => {
     const query = (queryText || input).trim();
     if (!query || isStreaming) return;
+
+    if (!repoName) {
+      setIsIngestOpen(true);
+      return;
+    }
 
     const userMessage: ChatMessage = {
       id: Date.now().toString(),
@@ -262,37 +251,62 @@ export default function Home() {
 
         {/* Action Controls & Active Repo Pill */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-          {/* Active Repo Badge */}
-          <div style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: '8px',
-            padding: '4px 10px',
-            background: 'rgba(255, 255, 255, 0.02)',
-            border: '1px solid var(--border-color)',
-            borderRadius: 'var(--radius-sm)',
-            fontSize: '12px',
-          }}>
-            <GitBranch size={13} color="var(--accent-emerald)" />
-            <span style={{ fontWeight: 500, color: 'var(--text-primary)' }}>{repoName}</span>
-            <span style={{ fontFamily: 'var(--font-mono)', color: 'var(--text-muted)', fontSize: '11px' }}>
-              @{commitSha}
-            </span>
-            {indexedPoints !== null && (
-              <span style={{
-                fontSize: '10px',
-                background: 'rgba(16, 185, 129, 0.1)',
-                border: '1px solid rgba(16, 185, 129, 0.25)',
-                color: 'var(--accent-emerald)',
-                padding: '1px 6px',
-                borderRadius: '99px',
-                fontFamily: 'var(--font-mono)',
-                fontWeight: 600,
-              }}>
-                {indexedPoints} chunks
-              </span>
-            )}
-          </div>
+          {/* Active Repo Badge / Select Repo Button */}
+          {repoName ? (
+            <div style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '8px',
+              padding: '4px 10px',
+              background: 'rgba(255, 255, 255, 0.02)',
+              border: '1px solid var(--border-color)',
+              borderRadius: 'var(--radius-sm)',
+              fontSize: '12px',
+            }}>
+              <GitBranch size={13} color="var(--accent-emerald)" />
+              <span style={{ fontWeight: 500, color: 'var(--text-primary)' }}>{repoName}</span>
+              {commitSha && (
+                <span style={{ fontFamily: 'var(--font-mono)', color: 'var(--text-muted)', fontSize: '11px' }}>
+                  @{commitSha}
+                </span>
+              )}
+              {indexedPoints !== null && (
+                <span style={{
+                  fontSize: '10px',
+                  background: 'rgba(16, 185, 129, 0.1)',
+                  border: '1px solid rgba(16, 185, 129, 0.25)',
+                  color: 'var(--accent-emerald)',
+                  padding: '1px 6px',
+                  borderRadius: '99px',
+                  fontFamily: 'var(--font-mono)',
+                  fontWeight: 600,
+                }}>
+                  {indexedPoints} chunks
+                </span>
+              )}
+            </div>
+          ) : (
+            <button
+              onClick={() => setIsIngestOpen(true)}
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '6px',
+                padding: '4px 10px',
+                background: 'rgba(56, 189, 248, 0.08)',
+                border: '1px solid var(--accent-cyan-subtle)',
+                borderRadius: 'var(--radius-sm)',
+                fontSize: '12px',
+                color: 'var(--accent-cyan)',
+                cursor: 'pointer',
+                fontWeight: 500,
+                transition: 'all 0.15s ease'
+              }}
+            >
+              <GitBranch size={13} color="var(--accent-cyan)" />
+              <span>Select Repository</span>
+            </button>
+          )}
 
           {/* Dark / Light Mode Toggle (Icon only) */}
           <button
@@ -356,7 +370,15 @@ export default function Home() {
               letterSpacing: '-0.03em',
               color: 'var(--text-primary)',
             }}>
-              Ask anything about <span style={{ marginLeft: '6px', color: 'var(--accent-cyan)' }}>{repoName}</span>
+              {repoName ? (
+                <>
+                  Ask anything about <span style={{ marginLeft: '6px', color: 'var(--accent-cyan)' }}>{repoName}</span>
+                </>
+              ) : (
+                <>
+                  Ask anything about <span style={{ marginLeft: '6px', color: 'var(--accent-cyan)' }}>your codebase</span>
+                </>
+              )}
             </h1>
 
             <p style={{

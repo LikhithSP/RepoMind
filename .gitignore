@@ -28,7 +28,7 @@ wheels/
 qdrant_data/
 repo_cache/
 bm25_index.pkl
-
+MD Files
 # Node / Frontend
 node_modules/
 .next/
