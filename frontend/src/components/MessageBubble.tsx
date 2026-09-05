@@ -159,13 +159,91 @@ export const MessageBubble: React.FC<MessageBubbleProps> = ({ message, repoName 
 
                 return <>{parts}</>;
               },
-              p: ({ children }) => <p style={{ marginBottom: '14px', lineHeight: 1.7 }}>{children}</p>,
-              ul: ({ children }) => <ul style={{ paddingLeft: '20px', marginBottom: '14px' }}>{children}</ul>,
-              ol: ({ children }) => <ol style={{ paddingLeft: '20px', marginBottom: '14px' }}>{children}</ol>,
-              li: ({ children }) => <li style={{ marginBottom: '6px' }}>{children}</li>,
-              h1: ({ children }) => <h1 style={{ fontSize: '18px', fontWeight: 700, margin: '16px 0 8px', color: 'var(--text-primary)' }}>{children}</h1>,
-              h2: ({ children }) => <h2 style={{ fontSize: '16px', fontWeight: 700, margin: '14px 0 6px', color: 'var(--text-primary)' }}>{children}</h2>,
-              h3: ({ children }) => <h3 style={{ fontSize: '14px', fontWeight: 600, margin: '12px 0 4px', color: 'var(--text-primary)' }}>{children}</h3>,
+              p: ({ children }) => (
+                <p style={{ marginBottom: '14px', lineHeight: 1.75, color: 'var(--text-secondary)' }}>
+                  {children}
+                </p>
+              ),
+              h1: ({ children }) => (
+                <h1 style={{
+                  fontSize: '22px',
+                  fontWeight: 800,
+                  marginTop: '24px',
+                  marginBottom: '12px',
+                  color: 'var(--text-primary)',
+                  letterSpacing: '-0.025em',
+                  lineHeight: 1.35,
+                }}>
+                  {children}
+                </h1>
+              ),
+              h2: ({ children }) => (
+                <h2 style={{
+                  fontSize: '18px',
+                  fontWeight: 700,
+                  marginTop: '20px',
+                  marginBottom: '10px',
+                  color: 'var(--text-primary)',
+                  letterSpacing: '-0.02em',
+                  lineHeight: 1.4,
+                }}>
+                  {children}
+                </h2>
+              ),
+              h3: ({ children }) => (
+                <h3 style={{
+                  fontSize: '15px',
+                  fontWeight: 600,
+                  marginTop: '16px',
+                  marginBottom: '8px',
+                  color: 'var(--text-primary)',
+                  letterSpacing: '-0.01em',
+                  lineHeight: 1.45,
+                }}>
+                  {children}
+                </h3>
+              ),
+              strong: ({ children }) => (
+                <strong style={{ fontWeight: 700, color: 'var(--text-primary)' }}>
+                  {children}
+                </strong>
+              ),
+              ul: ({ children }) => (
+                <ul style={{
+                  paddingLeft: '22px',
+                  marginBottom: '16px',
+                  lineHeight: 1.7,
+                  color: 'var(--text-secondary)',
+                }}>
+                  {children}
+                </ul>
+              ),
+              ol: ({ children }) => (
+                <ol style={{
+                  paddingLeft: '22px',
+                  marginBottom: '16px',
+                  lineHeight: 1.7,
+                  color: 'var(--text-secondary)',
+                }}>
+                  {children}
+                </ol>
+              ),
+              li: ({ children }) => (
+                <li style={{ marginBottom: '6px', paddingLeft: '2px' }}>
+                  {children}
+                </li>
+              ),
+              blockquote: ({ children }) => (
+                <blockquote style={{
+                  borderLeft: '3px solid var(--accent-cyan)',
+                  paddingLeft: '14px',
+                  margin: '14px 0',
+                  color: 'var(--text-muted)',
+                  fontStyle: 'italic',
+                }}>
+                  {children}
+                </blockquote>
+              ),
             }}
           >
             {processedContent}
