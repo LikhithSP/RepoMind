@@ -231,12 +231,13 @@ export default function Home() {
             width: '28px',
             height: '28px',
             borderRadius: 'var(--radius-sm)',
-            background: 'linear-gradient(135deg, #38bdf8, #818cf8)',
+            background: 'var(--accent-cyan-subtle)',
+            border: '1px solid var(--accent-cyan)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            color: '#000',
-            boxShadow: '0 0 12px rgba(56, 189, 248, 0.3)',
+            color: 'var(--accent-cyan)',
+            boxShadow: '0 0 12px var(--accent-cyan-glow)',
           }}>
             <Terminal size={15} strokeWidth={2.5} />
           </div>
