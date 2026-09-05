@@ -377,18 +377,19 @@ export default function Home() {
         {messages.length === 0 ? (
           <div style={{
             margin: 'auto',
-            padding: '40px 24px',
-            maxWidth: '720px',
+            padding: '20px 24px 60px',
+            maxWidth: '740px',
             width: '100%',
             textAlign: 'center',
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
+            transform: 'translateY(-20px)',
           }}>
             <h1 style={{
-              fontSize: '32px',
+              fontSize: '34px',
               fontWeight: 700,
-              marginBottom: '12px',
+              marginBottom: '16px',
               letterSpacing: '-0.03em',
               color: 'var(--text-primary)',
             }}>
@@ -397,10 +398,10 @@ export default function Home() {
 
             <p style={{
               color: 'var(--text-secondary)',
-              fontSize: '14.5px',
-              maxWidth: '540px',
-              margin: '0 auto 24px',
-              lineHeight: 1.6,
+              fontSize: '15px',
+              maxWidth: '560px',
+              margin: '0 auto 36px',
+              lineHeight: 1.65,
             }}>
               Accurate, verified answers grounded directly in the codebase with exact file lines, function definitions, and interactive citations.
             </p>
@@ -410,7 +411,7 @@ export default function Home() {
               display: 'flex',
               justifyContent: 'center',
               alignItems: 'center',
-              marginBottom: '32px',
+              marginBottom: '48px',
             }}>
               <button
                 onClick={() => setIsIngestOpen(true)}
@@ -437,7 +438,7 @@ export default function Home() {
             </div>
 
             {/* Centered Search Bar positioned right below Ingest button */}
-            <div className="search-container-transition" style={{ width: '100%', maxWidth: '640px' }}>
+            <div className="search-container-transition" style={{ width: '100%', maxWidth: '660px' }}>
               <form
                 onSubmit={(e) => {
                   e.preventDefault();
