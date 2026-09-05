@@ -215,7 +215,7 @@ export default function Home() {
   };
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', height: '100vh', background: 'var(--bg-main)' }}>
+    <div className="ambient-bg" style={{ display: 'flex', flexDirection: 'column', height: '100vh', overflow: 'hidden' }}>
       {/* Top Navbar */}
       <header className="glass-panel" style={{
         display: 'flex',
@@ -375,9 +375,18 @@ export default function Home() {
       {/* Main Chat Area */}
       <main style={{ flex: 1, overflowY: 'auto', display: 'flex', flexDirection: 'column' }}>
         {messages.length === 0 ? (
-          <div style={{ margin: 'auto', padding: '40px 24px', maxWidth: '680px', textAlign: 'center' }}>
+          <div style={{
+            margin: 'auto',
+            padding: '40px 24px',
+            maxWidth: '720px',
+            width: '100%',
+            textAlign: 'center',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+          }}>
             <h1 style={{
-              fontSize: '28px',
+              fontSize: '32px',
               fontWeight: 700,
               marginBottom: '12px',
               letterSpacing: '-0.03em',
@@ -390,18 +399,18 @@ export default function Home() {
               color: 'var(--text-secondary)',
               fontSize: '14.5px',
               maxWidth: '540px',
-              margin: '0 auto 28px',
+              margin: '0 auto 24px',
               lineHeight: 1.6,
             }}>
               Accurate, verified answers grounded directly in the codebase with exact file lines, function definitions, and interactive citations.
             </p>
 
-            {/* Quick Ingest Card */}
+            {/* Quick Ingest Button */}
             <div style={{
               display: 'flex',
               justifyContent: 'center',
               alignItems: 'center',
-              gap: '12px',
+              marginBottom: '32px',
             }}>
               <button
                 onClick={() => setIsIngestOpen(true)}
@@ -411,7 +420,7 @@ export default function Home() {
                   border: '1px solid var(--border-color)',
                   color: 'var(--text-secondary)',
                   borderRadius: 'var(--radius-md)',
-                  padding: '10px 18px',
+                  padding: '9px 18px',
                   fontSize: '13px',
                   fontWeight: 500,
                   cursor: isStreaming ? 'not-allowed' : 'pointer',
@@ -426,6 +435,83 @@ export default function Home() {
                 <ArrowRight size={13} color="var(--text-muted)" />
               </button>
             </div>
+
+            {/* Centered Search Bar positioned right below Ingest button */}
+            <div className="search-container-transition" style={{ width: '100%', maxWidth: '640px' }}>
+              <form
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  handleSubmit();
+                }}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  background: 'var(--input-bg)',
+                  border: '1px solid var(--input-border)',
+                  borderRadius: '9999px',
+                  padding: '8px 16px 8px 22px',
+                  gap: '10px',
+                  boxShadow: 'var(--input-shadow)',
+                  transition: 'border-color 0.2s ease, background 0.2s ease, box-shadow 0.2s ease',
+                }}
+                onFocus={(e) => {
+                  e.currentTarget.style.borderColor = 'var(--accent-cyan)';
+                }}
+                onBlur={(e) => {
+                  e.currentTarget.style.borderColor = 'var(--input-border)';
+                }}
+              >
+                <input
+                  type="text"
+                  value={input}
+                  onChange={(e) => setInput(e.target.value)}
+                  placeholder="Query architecture, functions, files, or flow..."
+                  disabled={isStreaming}
+                  autoFocus
+                  style={{
+                    flex: 1,
+                    background: 'transparent',
+                    border: 'none',
+                    color: 'var(--text-primary)',
+                    fontSize: '14px',
+                    outline: 'none',
+                    padding: '6px 0',
+                    fontFamily: 'var(--font-sans)',
+                  }}
+                />
+                <button
+                  type="submit"
+                  disabled={isStreaming || !input.trim()}
+                  style={{
+                    background: 'transparent',
+                    border: 'none',
+                    color: isStreaming || !input.trim() ? 'var(--text-muted)' : 'var(--accent-cyan)',
+                    cursor: isStreaming || !input.trim() ? 'default' : 'pointer',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    padding: '6px',
+                    borderRadius: '50%',
+                    transition: 'color 0.15s ease, transform 0.1s ease',
+                  }}
+                >
+                  {isStreaming ? (
+                    <RefreshCw size={15} className="animate-pulse-slow" color="var(--accent-cyan)" />
+                  ) : (
+                    <Send size={15} />
+                  )}
+                </button>
+              </form>
+              <div style={{
+                textAlign: 'center',
+                fontSize: '11px',
+                color: 'var(--text-muted)',
+                marginTop: '10px',
+                letterSpacing: '0.01em',
+              }}>
+                RepoMind answers can be cross-referenced with cited repository files.
+              </div>
+            </div>
           </div>
         ) : (
           <div style={{ paddingBottom: '24px' }}>
@@ -437,88 +523,93 @@ export default function Home() {
         )}
       </main>
 
-      {/* Seamless Floating Query Input (No Footer Division) */}
-      <div style={{
-        padding: '12px 24px 20px',
-        background: 'transparent',
-        borderTop: 'none',
-      }}>
-        <div style={{ maxWidth: '780px', margin: '0 auto' }}>
-          <form
-            onSubmit={(e) => {
-              e.preventDefault();
-              handleSubmit();
-            }}
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              background: 'var(--input-bg)',
-              border: '1px solid var(--input-border)',
-              borderRadius: '9999px',
-              padding: '6px 14px 6px 20px',
-              gap: '10px',
-              boxShadow: 'var(--input-shadow)',
-              transition: 'border-color 0.2s ease, background 0.2s ease, box-shadow 0.2s ease',
-            }}
-            onFocus={(e) => {
-              e.currentTarget.style.borderColor = 'var(--accent-cyan)';
-            }}
-            onBlur={(e) => {
-              e.currentTarget.style.borderColor = 'var(--input-border)';
-            }}
-          >
-            <input
-              type="text"
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              placeholder="Query architecture, functions, files, or flow..."
-              disabled={isStreaming}
-              autoFocus
-              style={{
-                flex: 1,
-                background: 'transparent',
-                border: 'none',
-                color: 'var(--text-primary)',
-                fontSize: '13.5px',
-                outline: 'none',
-                padding: '7px 0',
-                fontFamily: 'var(--font-sans)',
+      {/* Floating Bottom Query Input (shown after first search/message, with Google-like slide-up transition) */}
+      {messages.length > 0 && (
+        <div
+          className="search-container-transition animate-fade-in"
+          style={{
+            padding: '12px 24px 20px',
+            background: 'transparent',
+            borderTop: 'none',
+          }}
+        >
+          <div style={{ maxWidth: '780px', margin: '0 auto' }}>
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                handleSubmit();
               }}
-            />
-            <button
-              type="submit"
-              disabled={isStreaming || !input.trim()}
               style={{
-                background: 'transparent',
-                border: 'none',
-                color: isStreaming || !input.trim() ? 'var(--text-muted)' : 'var(--accent-cyan)',
-                cursor: isStreaming || !input.trim() ? 'default' : 'pointer',
                 display: 'flex',
                 alignItems: 'center',
-                justifyContent: 'center',
-                padding: '6px',
-                borderRadius: '50%',
-                transition: 'color 0.15s ease, transform 0.1s ease',
+                background: 'var(--input-bg)',
+                border: '1px solid var(--input-border)',
+                borderRadius: '9999px',
+                padding: '6px 14px 6px 20px',
+                gap: '10px',
+                boxShadow: 'var(--input-shadow)',
+                transition: 'border-color 0.2s ease, background 0.2s ease, box-shadow 0.2s ease',
+              }}
+              onFocus={(e) => {
+                e.currentTarget.style.borderColor = 'var(--accent-cyan)';
+              }}
+              onBlur={(e) => {
+                e.currentTarget.style.borderColor = 'var(--input-border)';
               }}
             >
-              {isStreaming ? (
-                <RefreshCw size={15} className="animate-pulse-slow" color="var(--accent-cyan)" />
-              ) : (
-                <Send size={15} />
-              )}
-            </button>
-          </form>
-          <div style={{
-            textAlign: 'center',
-            fontSize: '11px',
-            color: 'var(--text-muted)',
-            marginTop: '8px',
-            letterSpacing: '0.01em',
-          }}>
-            RepoMind answers can be cross-referenced with cited repository files.
+              <input
+                type="text"
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+                placeholder="Query architecture, functions, files, or flow..."
+                disabled={isStreaming}
+                autoFocus
+                style={{
+                  flex: 1,
+                  background: 'transparent',
+                  border: 'none',
+                  color: 'var(--text-primary)',
+                  fontSize: '13.5px',
+                  outline: 'none',
+                  padding: '7px 0',
+                  fontFamily: 'var(--font-sans)',
+                }}
+              />
+              <button
+                type="submit"
+                disabled={isStreaming || !input.trim()}
+                style={{
+                  background: 'transparent',
+                  border: 'none',
+                  color: isStreaming || !input.trim() ? 'var(--text-muted)' : 'var(--accent-cyan)',
+                  cursor: isStreaming || !input.trim() ? 'default' : 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  padding: '6px',
+                  borderRadius: '50%',
+                  transition: 'color 0.15s ease, transform 0.1s ease',
+                }}
+              >
+                {isStreaming ? (
+                  <RefreshCw size={15} className="animate-pulse-slow" color="var(--accent-cyan)" />
+                ) : (
+                  <Send size={15} />
+                )}
+              </button>
+            </form>
+            <div style={{
+              textAlign: 'center',
+              fontSize: '11px',
+              color: 'var(--text-muted)',
+              marginTop: '8px',
+              letterSpacing: '0.01em',
+            }}>
+              RepoMind answers can be cross-referenced with cited repository files.
+            </div>
           </div>
         </div>
-      </div>
+      )}
     </div>
   );
 }
