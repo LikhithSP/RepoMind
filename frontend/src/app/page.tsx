@@ -345,11 +345,11 @@ export default function Home() {
             <p style={{
               color: 'var(--text-secondary)',
               fontSize: '14.5px',
-              maxWidth: '520px',
+              maxWidth: '540px',
               margin: '0 auto 28px',
               lineHeight: 1.6,
             }}>
-              Grounded answers with exact line numbers, source snippets, and cross-encoder re-ranking.
+              Accurate, verified answers grounded directly in the codebase — with exact file lines, function definitions, and interactive citations.
             </p>
 
             {/* Quick Ingest Card */}

@@ -9,7 +9,7 @@ interface ModelSelectorProps {
 }
 
 const MODELS = [
-  { provider: 'groq', model: 'qwen/qwen3.8-27b', label: 'Qwen 3.8 27B', tag: 'Fast ⚡ Active', isLive: true },
+  { provider: 'groq', model: 'qwen/qwen3.8-27b', label: 'Qwen 3.8 27B', tag: 'Fast', isLive: true },
   { provider: 'groq', model: 'qwen/qwen3.6-27b', label: 'Qwen 3.6 27B', tag: 'Groq', isLive: true },
   { provider: 'mock', model: 'mock-code-expert', label: 'Offline Assistant', tag: 'Local', isLive: false },
   { provider: 'openai', model: 'gpt-4o-mini', label: 'GPT-4o Mini', tag: 'OpenAI', isLive: true },
