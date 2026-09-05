@@ -440,8 +440,8 @@ export default function Home() {
                   background: 'var(--input-bg)',
                   border: '1px solid var(--input-border)',
                   borderRadius: '9999px',
-                  padding: '6px 10px 6px 20px',
-                  gap: '10px',
+                  padding: '6px 10px 6px 12px',
+                  gap: '8px',
                   boxShadow: 'var(--input-shadow)',
                   transition: 'border-color 0.2s ease, background 0.2s ease, box-shadow 0.2s ease',
                 }}
@@ -452,6 +452,30 @@ export default function Home() {
                   e.currentTarget.style.borderColor = 'var(--input-border)';
                 }}
               >
+                {/* '+' Ingest Repo Action Button */}
+                <button
+                  type="button"
+                  onClick={() => setIsIngestOpen(true)}
+                  disabled={isStreaming}
+                  title="Ingest new repository (start new session)"
+                  style={{
+                    background: 'var(--accent-cyan-subtle)',
+                    border: '1px solid var(--accent-cyan)',
+                    color: 'var(--accent-cyan)',
+                    width: '28px',
+                    height: '28px',
+                    borderRadius: '50%',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    cursor: isStreaming ? 'not-allowed' : 'pointer',
+                    flexShrink: 0,
+                    transition: 'all 0.15s ease',
+                  }}
+                >
+                  <PlusCircle size={15} />
+                </button>
+
                 <input
                   type="text"
                   value={input}
@@ -549,8 +573,8 @@ export default function Home() {
                 background: 'var(--input-bg)',
                 border: '1px solid var(--input-border)',
                 borderRadius: '9999px',
-                padding: '6px 10px 6px 20px',
-                gap: '10px',
+                padding: '6px 10px 6px 12px',
+                gap: '8px',
                 boxShadow: 'var(--input-shadow)',
                 transition: 'border-color 0.2s ease, background 0.2s ease, box-shadow 0.2s ease',
               }}
@@ -561,6 +585,30 @@ export default function Home() {
                 e.currentTarget.style.borderColor = 'var(--input-border)';
               }}
             >
+              {/* '+' Ingest Repo Action Button */}
+              <button
+                type="button"
+                onClick={() => setIsIngestOpen(true)}
+                disabled={isStreaming}
+                title="Ingest new repository (start new session)"
+                style={{
+                  background: 'var(--accent-cyan-subtle)',
+                  border: '1px solid var(--accent-cyan)',
+                  color: 'var(--accent-cyan)',
+                  width: '28px',
+                  height: '28px',
+                  borderRadius: '50%',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  cursor: isStreaming ? 'not-allowed' : 'pointer',
+                  flexShrink: 0,
+                  transition: 'all 0.15s ease',
+                }}
+              >
+                <PlusCircle size={15} />
+              </button>
+
               <input
                 type="text"
                 value={input}
