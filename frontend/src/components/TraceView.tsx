@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Activity, Zap, CheckCircle2, XCircle, ChevronDown, ChevronUp, Clock, Filter } from 'lucide-react';
+import { Activity, Zap, CheckCircle2, XCircle, ChevronDown, ChevronUp, Clock, Filter, ShieldCheck } from 'lucide-react';
 import { TraceInfo } from '../lib/types';
 
 interface TraceViewProps {
@@ -14,12 +14,13 @@ export const TraceView: React.FC<TraceViewProps> = ({ trace }) => {
   return (
     <div style={{
       marginTop: '12px',
-      background: 'var(--bg-surface)',
+      background: 'rgba(255, 255, 255, 0.015)',
       border: '1px solid var(--border-color)',
-      borderRadius: '8px',
-      padding: '10px 14px',
-      fontSize: '12px',
-      fontFamily: 'var(--font-mono)'
+      borderRadius: 'var(--radius-md)',
+      padding: '8px 12px',
+      fontSize: '11.5px',
+      fontFamily: 'var(--font-mono)',
+      transition: 'border-color 0.15s ease',
     }}>
       <div
         onClick={() => setExpanded(!expanded)}
@@ -28,74 +29,84 @@ export const TraceView: React.FC<TraceViewProps> = ({ trace }) => {
           alignItems: 'center',
           justifyContent: 'space-between',
           cursor: 'pointer',
-          userSelect: 'none'
+          userSelect: 'none',
         }}
       >
-        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-          <Activity size={14} color="var(--accent-cyan)" />
-          <span style={{ fontWeight: 600, color: 'var(--text-secondary)' }}>PIPELINE TRACE & REASONING</span>
-          <span style={{
-            fontSize: '10px',
-            background: 'var(--bg-card)',
-            color: 'var(--accent-cyan)',
-            padding: '2px 6px',
-            borderRadius: '4px'
-          }}>
-            {trace.latency_ms} ms
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
+          <Activity size={13} color="var(--accent-cyan)" />
+          <span style={{ fontWeight: 600, color: 'var(--text-secondary)', letterSpacing: '0.02em' }}>
+            PIPELINE TRACE
           </span>
           <span style={{
             fontSize: '10px',
-            background: trace.guardrail_passed ? 'rgba(16, 185, 129, 0.15)' : 'rgba(244, 63, 94, 0.15)',
-            color: trace.guardrail_passed ? 'var(--accent-emerald)' : 'var(--accent-rose)',
-            padding: '2px 6px',
+            background: 'rgba(255, 255, 255, 0.04)',
+            border: '1px solid var(--border-color)',
+            color: 'var(--accent-cyan)',
+            padding: '1px 5px',
             borderRadius: '4px',
-            fontWeight: 600
           }}>
-            {trace.guardrail_passed ? 'Grounded' : 'Declined (Guardrail)'}
+            {trace.latency_ms}ms
+          </span>
+          <span style={{
+            fontSize: '10px',
+            background: trace.guardrail_passed ? 'rgba(16, 185, 129, 0.1)' : 'rgba(244, 63, 94, 0.1)',
+            border: `1px solid ${trace.guardrail_passed ? 'rgba(16, 185, 129, 0.25)' : 'rgba(244, 63, 94, 0.25)'}`,
+            color: trace.guardrail_passed ? 'var(--accent-emerald)' : 'var(--accent-rose)',
+            padding: '1px 6px',
+            borderRadius: '4px',
+            fontWeight: 600,
+          }}>
+            {trace.guardrail_passed ? 'Grounded' : 'Guardrail Flagged'}
           </span>
         </div>
-        <div>
-          {expanded ? <ChevronUp size={14} color="var(--text-muted)" /> : <ChevronDown size={14} color="var(--text-muted)" />}
+        <div style={{ color: 'var(--text-muted)' }}>
+          {expanded ? <ChevronUp size={13} /> : <ChevronDown size={13} />}
         </div>
       </div>
 
       {expanded && (
-        <div style={{ marginTop: '12px', display: 'flex', flexDirection: 'column', gap: '8px', borderTop: '1px solid var(--border-color)', paddingTop: '10px' }}>
+        <div style={{
+          marginTop: '10px',
+          display: 'flex',
+          flexDirection: 'column',
+          gap: '8px',
+          borderTop: '1px solid var(--border-subtle)',
+          paddingTop: '10px',
+          color: 'var(--text-secondary)',
+          lineHeight: '1.5',
+        }}>
           <div style={{ display: 'flex', alignItems: 'flex-start', gap: '8px' }}>
-            <Filter size={13} color="var(--text-muted)" style={{ marginTop: '2px' }} />
+            <Filter size={12} color="var(--text-muted)" style={{ marginTop: '2px' }} />
             <div>
-              <span style={{ color: 'var(--text-muted)' }}>Query Router: </span>
+              <span style={{ color: 'var(--text-muted)' }}>Router: </span>
               <strong style={{ color: 'var(--accent-cyan)' }}>{trace.intent.toUpperCase()}</strong>
-              <div style={{ color: 'var(--text-secondary)', fontSize: '11px', marginTop: '2px' }}>
+              <div style={{ color: 'var(--text-muted)', fontSize: '11px', marginTop: '1px' }}>
                 {trace.router_reason}
               </div>
             </div>
           </div>
 
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <Zap size={13} color="var(--text-muted)" />
-            <span style={{ color: 'var(--text-muted)' }}>Retrieval & Re-ranking: </span>
-            <span style={{ color: 'var(--text-secondary)' }}>
-              Top-{trace.retrieved_count} Hybrid candidates &rarr; Top-{trace.reranked_count} Re-ranked (ms-marco-MiniLM)
+            <Zap size={12} color="var(--text-muted)" />
+            <span>
+              Top-{trace.retrieved_count} Hybrid hits &rarr; Top-{trace.reranked_count} Re-ranked (ms-marco)
             </span>
           </div>
 
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
             {trace.guardrail_passed ? (
-              <CheckCircle2 size={13} color="var(--accent-emerald)" />
+              <CheckCircle2 size={12} color="var(--accent-emerald)" />
             ) : (
-              <XCircle size={13} color="var(--accent-rose)" />
+              <XCircle size={12} color="var(--accent-rose)" />
             )}
-            <span style={{ color: 'var(--text-muted)' }}>Guardrail Status: </span>
             <span style={{ color: trace.guardrail_passed ? 'var(--accent-emerald)' : 'var(--accent-rose)' }}>
               {trace.guardrail_reason}
             </span>
           </div>
 
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <Clock size={13} color="var(--text-muted)" />
-            <span style={{ color: 'var(--text-muted)' }}>Model Configuration: </span>
-            <span style={{ color: 'var(--text-secondary)' }}>
+            <Clock size={12} color="var(--text-muted)" />
+            <span>
               {trace.model} ({trace.provider})
             </span>
           </div>

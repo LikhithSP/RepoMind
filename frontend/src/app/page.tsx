@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useRef, useEffect } from 'react';
-import { Send, Terminal, GitBranch, RefreshCw, Layers, PlusCircle } from 'lucide-react';
+import { Send, Terminal, GitBranch, RefreshCw, Layers, PlusCircle, ArrowRight, ShieldCheck, Sparkles, Database } from 'lucide-react';
 import { ChatMessage, SourceChunk, TraceInfo } from '../lib/types';
 import { MessageBubble } from '../components/MessageBubble';
 import { ModelSelector } from '../components/ModelSelector';
@@ -131,7 +131,6 @@ export default function Home() {
             if (trimmedLine.startsWith('event:')) {
               eventType = trimmedLine.replace('event:', '').trim();
             } else if (trimmedLine.startsWith('data:')) {
-              // Strip only the leading 'data:' prefix so content whitespace is preserved
               const dataIdx = line.indexOf('data:');
               eventData = line.slice(dataIdx + 5).trim();
             }
@@ -171,7 +170,6 @@ export default function Home() {
         }
       }
 
-      // Ensure stream is finalized
       setMessages((prev) =>
         prev.map((msg) =>
           msg.id === assistantPlaceholderId
@@ -199,79 +197,106 @@ export default function Home() {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', height: '100vh', background: 'var(--bg-main)' }}>
       {/* Top Navbar */}
-      <header style={{
+      <header className="glass-panel" style={{
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'space-between',
-        padding: '12px 24px',
+        padding: '10px 24px',
         borderBottom: '1px solid var(--border-color)',
-        background: 'var(--bg-surface)'
+        zIndex: 10,
       }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+        {/* Brand */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
           <div style={{
             width: '28px',
             height: '28px',
-            borderRadius: '6px',
-            background: 'var(--accent-cyan)',
+            borderRadius: 'var(--radius-sm)',
+            background: 'linear-gradient(135deg, #38bdf8, #818cf8)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            color: '#000'
+            color: '#000',
+            boxShadow: '0 0 12px rgba(56, 189, 248, 0.3)',
           }}>
-            <Terminal size={16} />
+            <Terminal size={15} strokeWidth={2.5} />
           </div>
-          <span style={{ fontWeight: 700, fontSize: '15px', letterSpacing: '-0.2px' }}>CodeRAG</span>
-          <span style={{
-            fontSize: '11px',
-            background: 'var(--bg-card)',
-            color: 'var(--accent-cyan)',
-            padding: '2px 8px',
-            borderRadius: '4px',
-            fontFamily: 'var(--font-mono)'
-          }}>
-            Agentic Codebase Copilot
-          </span>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <span style={{ fontWeight: 700, fontSize: '14.5px', letterSpacing: '-0.02em', color: '#fff' }}>
+              RepoMind
+            </span>
+            <span style={{
+              fontSize: '10.5px',
+              fontWeight: 500,
+              background: 'rgba(255, 255, 255, 0.04)',
+              border: '1px solid var(--border-color)',
+              color: 'var(--text-muted)',
+              padding: '1px 6px',
+              borderRadius: '4px',
+              fontFamily: 'var(--font-mono)',
+            }}>
+              v0.1
+            </span>
+          </div>
         </div>
 
-        <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
-          <button
-            onClick={() => setIsIngestOpen(true)}
-            disabled={isStreaming}
-            style={{
-              background: 'rgba(56, 189, 248, 0.12)',
-              border: '1px solid var(--accent-cyan)',
-              color: 'var(--accent-cyan)',
-              borderRadius: '6px',
-              padding: '5px 10px',
-              fontSize: '12px',
-              fontWeight: 600,
-              cursor: isStreaming ? 'not-allowed' : 'pointer',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '6px'
-            }}
-          >
-            <PlusCircle size={14} />
-            <span>Ingest Repo</span>
-          </button>
-
-          <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '12px', color: 'var(--text-secondary)' }}>
+        {/* Action Controls & Active Repo Pill */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+          {/* Active Repo Badge */}
+          <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '8px',
+            padding: '4px 10px',
+            background: 'rgba(255, 255, 255, 0.02)',
+            border: '1px solid var(--border-color)',
+            borderRadius: 'var(--radius-sm)',
+            fontSize: '12px',
+          }}>
             <GitBranch size={13} color="var(--accent-emerald)" />
-            <span>{repoName}</span>
-            <span style={{ fontFamily: 'var(--font-mono)', color: 'var(--text-muted)' }}>@{commitSha}</span>
+            <span style={{ fontWeight: 500, color: 'var(--text-primary)' }}>{repoName}</span>
+            <span style={{ fontFamily: 'var(--font-mono)', color: 'var(--text-muted)', fontSize: '11px' }}>
+              @{commitSha}
+            </span>
             {indexedPoints !== null && (
               <span style={{
                 fontSize: '10px',
-                background: 'rgba(16, 185, 129, 0.15)',
+                background: 'rgba(16, 185, 129, 0.1)',
+                border: '1px solid rgba(16, 185, 129, 0.25)',
                 color: 'var(--accent-emerald)',
-                padding: '2px 6px',
-                borderRadius: '4px',
-                fontFamily: 'var(--font-mono)'
+                padding: '1px 6px',
+                borderRadius: '99px',
+                fontFamily: 'var(--font-mono)',
+                fontWeight: 600,
               }}>
                 {indexedPoints} chunks
               </span>
             )}
           </div>
+
+          {/* Ingest Button */}
+          <button
+            onClick={() => setIsIngestOpen(true)}
+            disabled={isStreaming}
+            style={{
+              background: 'rgba(56, 189, 248, 0.08)',
+              border: '1px solid rgba(56, 189, 248, 0.25)',
+              color: 'var(--accent-cyan)',
+              borderRadius: 'var(--radius-sm)',
+              padding: '5px 12px',
+              fontSize: '12px',
+              fontWeight: 600,
+              cursor: isStreaming ? 'not-allowed' : 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '6px',
+              transition: 'all 0.15s ease',
+            }}
+          >
+            <PlusCircle size={13} />
+            <span>Ingest Repo</span>
+          </button>
+
+          {/* Model Selector */}
           <ModelSelector
             provider={provider}
             model={model}
@@ -306,51 +331,78 @@ export default function Home() {
       {/* Main Chat Area */}
       <main style={{ flex: 1, overflowY: 'auto', display: 'flex', flexDirection: 'column' }}>
         {messages.length === 0 ? (
-          <div style={{ margin: 'auto', padding: '40px 20px', maxWidth: '780px', textAlign: 'center' }}>
+          <div style={{ margin: 'auto', padding: '40px 24px', maxWidth: '680px', textAlign: 'center' }}>
+            {/* Clean Hero Badge */}
             <div style={{
-              width: '56px',
-              height: '56px',
-              borderRadius: '12px',
-              background: 'rgba(56, 189, 248, 0.1)',
-              border: '1px solid var(--accent-cyan)',
-              display: 'flex',
+              display: 'inline-flex',
               alignItems: 'center',
-              justifyContent: 'center',
-              margin: '0 auto 16px'
+              gap: '6px',
+              padding: '4px 12px',
+              borderRadius: '99px',
+              background: 'rgba(56, 189, 248, 0.08)',
+              border: '1px solid rgba(56, 189, 248, 0.25)',
+              color: 'var(--accent-cyan)',
+              fontSize: '12px',
+              fontWeight: 500,
+              marginBottom: '20px',
             }}>
-              <Layers size={28} color="var(--accent-cyan)" />
+              <Sparkles size={13} />
+              <span>Hybrid Vector &amp; AST Code Search</span>
             </div>
-            <h1 style={{ fontSize: '24px', fontWeight: 700, marginBottom: '8px' }}>
-              Explore the Codebase with Cited Precision
+
+            <h1 style={{
+              fontSize: '28px',
+              fontWeight: 700,
+              marginBottom: '12px',
+              letterSpacing: '-0.03em',
+              color: '#fff',
+            }}>
+              Ask anything about <span style={{ color: 'var(--accent-cyan)' }}>{repoName}</span>
             </h1>
-            <p style={{ color: 'var(--text-secondary)', fontSize: '14px', maxWidth: '580px', margin: '0 auto 20px' }}>
-              CodeRAG combines AST chunking, BM25 sparse search, dense vector embeddings, and cross-encoder re-ranking to answer architecture and implementation queries with verified citations.
+
+            <p style={{
+              color: 'var(--text-secondary)',
+              fontSize: '14.5px',
+              maxWidth: '520px',
+              margin: '0 auto 28px',
+              lineHeight: 1.6,
+            }}>
+              Grounded answers with exact line numbers, source snippets, and cross-encoder re-ranking.
             </p>
-            <div style={{ display: 'flex', justifyContent: 'center', gap: '10px', marginBottom: '28px' }}>
+
+            {/* Quick Ingest Card */}
+            <div style={{
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              gap: '12px',
+            }}>
               <button
                 onClick={() => setIsIngestOpen(true)}
                 disabled={isStreaming}
                 style={{
-                  background: 'var(--accent-cyan)',
-                  color: '#000',
-                  border: 'none',
-                  borderRadius: '6px',
-                  padding: '8px 16px',
+                  background: 'rgba(255, 255, 255, 0.04)',
+                  border: '1px solid var(--border-color)',
+                  color: 'var(--text-secondary)',
+                  borderRadius: 'var(--radius-md)',
+                  padding: '10px 18px',
                   fontSize: '13px',
-                  fontWeight: 600,
+                  fontWeight: 500,
                   cursor: isStreaming ? 'not-allowed' : 'pointer',
-                  display: 'flex',
+                  display: 'inline-flex',
                   alignItems: 'center',
-                  gap: '6px'
+                  gap: '8px',
+                  transition: 'all 0.15s ease',
                 }}
               >
-                <PlusCircle size={15} />
-                <span>Ingest a Different GitHub Repo</span>
+                <PlusCircle size={15} color="var(--accent-cyan)" />
+                <span>Ingest another repository</span>
+                <ArrowRight size={13} color="var(--text-muted)" />
               </button>
             </div>
           </div>
         ) : (
-          <div>
+          <div style={{ paddingBottom: '24px' }}>
             {messages.map((msg) => (
               <MessageBubble key={msg.id} message={msg} repoName={repoName} />
             ))}
@@ -360,12 +412,11 @@ export default function Home() {
       </main>
 
       {/* Bottom Query Input Box */}
-      <footer style={{
+      <footer className="glass-panel" style={{
         padding: '16px 24px',
         borderTop: '1px solid var(--border-color)',
-        background: 'var(--bg-surface)'
       }}>
-        <div style={{ maxWidth: '900px', margin: '0 auto' }}>
+        <div style={{ maxWidth: '860px', margin: '0 auto' }}>
           <form
             onSubmit={(e) => {
               e.preventDefault();
@@ -374,48 +425,51 @@ export default function Home() {
             style={{
               display: 'flex',
               alignItems: 'center',
-              background: 'var(--bg-main)',
+              background: 'rgba(255, 255, 255, 0.02)',
               border: '1px solid var(--border-color)',
-              borderRadius: '8px',
+              borderRadius: 'var(--radius-md)',
               padding: '6px 12px',
               gap: '8px',
-              transition: 'border-color 0.15s ease'
+              boxShadow: 'var(--shadow-sm)',
+              transition: 'border-color 0.15s ease, box-shadow 0.15s ease',
             }}
           >
             <input
               type="text"
               value={input}
               onChange={(e) => setInput(e.target.value)}
-              placeholder="Ask an engineering question (e.g. 'How is the Session class implemented?')"
+              placeholder={`Ask a question about ${repoName} (e.g. 'How is authentication handled?')`}
               disabled={isStreaming}
+              autoFocus
               style={{
                 flex: 1,
                 background: 'transparent',
                 border: 'none',
                 color: 'var(--text-primary)',
-                fontSize: '14px',
+                fontSize: '13.5px',
                 outline: 'none',
-                padding: '6px 0'
+                padding: '6px 4px',
               }}
             />
             <button
               type="submit"
               disabled={isStreaming || !input.trim()}
               style={{
-                background: isStreaming || !input.trim() ? 'var(--bg-card)' : 'var(--accent-cyan)',
+                background: isStreaming || !input.trim() ? 'rgba(255, 255, 255, 0.05)' : 'var(--accent-cyan)',
                 color: isStreaming || !input.trim() ? 'var(--text-muted)' : '#000',
                 border: 'none',
-                borderRadius: '6px',
-                padding: '8px 14px',
-                fontSize: '13px',
+                borderRadius: 'var(--radius-sm)',
+                padding: '7px 14px',
+                fontSize: '12.5px',
                 fontWeight: 600,
                 cursor: isStreaming || !input.trim() ? 'not-allowed' : 'pointer',
                 display: 'flex',
                 alignItems: 'center',
-                gap: '6px'
+                gap: '6px',
+                transition: 'all 0.15s ease',
               }}
             >
-              {isStreaming ? <RefreshCw size={14} className="animate-pulse-slow" /> : <Send size={14} />}
+              {isStreaming ? <RefreshCw size={13} className="animate-pulse-slow" /> : <Send size={13} />}
               <span>{isStreaming ? 'Streaming' : 'Ask'}</span>
             </button>
           </form>
@@ -425,10 +479,14 @@ export default function Home() {
             alignItems: 'center',
             fontSize: '11px',
             color: 'var(--text-muted)',
-            marginTop: '8px'
+            marginTop: '8px',
+            padding: '0 4px',
           }}>
-            <span>Grounding: Strict AST Context &bull; Hybrid RRF (BM25+Dense) &bull; ms-marco-MiniLM Re-ranking</span>
-            <span>Esc to clear &bull; Enter to submit</span>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+              <ShieldCheck size={12} color="var(--accent-emerald)" />
+              <span>Anti-hallucination guardrail active &bull; Hybrid BM25 + Qdrant</span>
+            </div>
+            <span>Enter to submit</span>
           </div>
         </div>
       </footer>

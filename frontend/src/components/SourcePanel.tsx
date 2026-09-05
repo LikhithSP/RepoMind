@@ -26,36 +26,37 @@ export const SourceSnippet: React.FC<SourceSnippetProps> = ({ chunk, repoName = 
     <div style={{
       background: 'var(--code-bg)',
       border: '1px solid var(--border-color)',
-      borderRadius: '6px',
+      borderRadius: 'var(--radius-sm)',
       overflow: 'hidden',
-      marginTop: '6px',
+      marginTop: '8px',
       fontFamily: 'var(--font-mono)',
-      fontSize: '11px'
+      fontSize: '11px',
+      boxShadow: 'var(--shadow-sm)',
     }}>
       <div style={{
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'space-between',
-        padding: '4px 10px',
-        background: 'var(--bg-surface)',
+        padding: '6px 12px',
+        background: 'rgba(255, 255, 255, 0.02)',
         borderBottom: '1px solid var(--border-color)',
       }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
           <span style={{
-            background: 'rgba(56, 189, 248, 0.2)',
+            background: 'rgba(56, 189, 248, 0.15)',
             color: 'var(--accent-cyan)',
-            padding: '0 5px',
-            borderRadius: '10px',
+            padding: '1px 6px',
+            borderRadius: '4px',
             fontSize: '10px',
-            fontWeight: 700
+            fontWeight: 700,
           }}>
-            {sourceIndex}
+            [{sourceIndex}]
           </span>
-          <span style={{ color: 'var(--text-secondary)' }}>
-            {chunk.file_path} (L{chunk.start_line}–{chunk.end_line})
+          <span style={{ color: 'var(--text-secondary)', fontWeight: 500 }}>
+            {chunk.file_path} <span style={{ color: 'var(--text-muted)' }}>(L{chunk.start_line}–{chunk.end_line})</span>
           </span>
         </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
           <button
             onClick={handleCopy}
             style={{
@@ -66,11 +67,12 @@ export const SourceSnippet: React.FC<SourceSnippetProps> = ({ chunk, repoName = 
               display: 'flex',
               alignItems: 'center',
               gap: '4px',
-              fontSize: '11px'
+              fontSize: '11px',
+              transition: 'color 0.15s ease',
             }}
           >
             {copied ? <Check size={11} color="var(--accent-emerald)" /> : <Copy size={11} />}
-            {copied ? 'Copied' : 'Copy'}
+            <span>{copied ? 'Copied' : 'Copy'}</span>
           </button>
           <a
             href={getGitHubUrl()}
@@ -81,7 +83,8 @@ export const SourceSnippet: React.FC<SourceSnippetProps> = ({ chunk, repoName = 
               alignItems: 'center',
               gap: '3px',
               color: 'var(--accent-cyan)',
-              fontSize: '11px'
+              fontSize: '11px',
+              fontWeight: 500,
             }}
           >
             GitHub <ExternalLink size={10} />
@@ -89,13 +92,16 @@ export const SourceSnippet: React.FC<SourceSnippetProps> = ({ chunk, repoName = 
         </div>
       </div>
       <pre style={{
-        padding: '8px 10px',
+        padding: '10px 12px',
         overflowX: 'auto',
         color: '#e2e8f0',
-        lineHeight: 1.45,
-        maxHeight: '180px',
+        lineHeight: 1.5,
+        maxHeight: '190px',
         margin: 0,
-        fontSize: '11px'
+        fontSize: '11.5px',
+        background: 'transparent',
+        border: 'none',
+        borderRadius: 0,
       }}>
         <code>{chunk.text}</code>
       </pre>
@@ -128,19 +134,18 @@ export const SourcePanel: React.FC<SourcePanelProps> = ({ sources, repoName }) =
 
   return (
     <div style={{
-      marginTop: '12px',
-      padding: '8px 12px',
-      background: 'rgba(20, 23, 33, 0.6)',
-      border: '1px solid rgba(40, 47, 69, 0.6)',
-      borderRadius: '8px',
+      padding: '10px 14px',
+      background: 'rgba(255, 255, 255, 0.02)',
+      border: '1px solid var(--border-color)',
+      borderRadius: 'var(--radius-md)',
       fontSize: '12px',
     }}>
-      {/* Notebook-style Minimal Header */}
+      {/* Minimal Header */}
       <div style={{
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'space-between',
-        marginBottom: '6px',
+        marginBottom: '8px',
       }}>
         <div style={{
           display: 'flex',
@@ -149,15 +154,14 @@ export const SourcePanel: React.FC<SourcePanelProps> = ({ sources, repoName }) =
           fontSize: '11px',
           fontWeight: 600,
           color: 'var(--text-muted)',
-          textTransform: 'uppercase',
-          letterSpacing: '0.5px'
+          letterSpacing: '0.04em',
         }}>
-          <BookOpen size={12} color="var(--accent-cyan)" />
-          <span>Cited Sources ({sources.length})</span>
+          <BookOpen size={13} color="var(--accent-cyan)" />
+          <span>CITATIONS ({sources.length})</span>
         </div>
       </div>
 
-      {/* Small compact pills corresponding to [1], [2], [3] */}
+      {/* Small compact pills */}
       <div style={{
         display: 'flex',
         flexWrap: 'wrap',
@@ -175,9 +179,9 @@ export const SourcePanel: React.FC<SourcePanelProps> = ({ sources, repoName }) =
                 display: 'inline-flex',
                 alignItems: 'center',
                 gap: '5px',
-                padding: '2px 8px',
-                borderRadius: '6px',
-                background: isSelected ? 'rgba(56, 189, 248, 0.18)' : 'rgba(255, 255, 255, 0.04)',
+                padding: '3px 9px',
+                borderRadius: 'var(--radius-sm)',
+                background: isSelected ? 'rgba(56, 189, 248, 0.15)' : 'rgba(255, 255, 255, 0.03)',
                 border: isSelected ? '1px solid var(--accent-cyan)' : '1px solid var(--border-color)',
                 color: isSelected ? 'var(--accent-cyan)' : 'var(--text-secondary)',
                 fontSize: '11px',
@@ -190,14 +194,14 @@ export const SourcePanel: React.FC<SourcePanelProps> = ({ sources, repoName }) =
               <span style={{
                 fontSize: '10px',
                 fontWeight: 700,
-                color: isSelected ? 'var(--accent-cyan)' : 'var(--text-muted)'
+                color: isSelected ? 'var(--accent-cyan)' : 'var(--text-muted)',
               }}>
                 [{idx + 1}]
               </span>
               {getTypeIcon(s.type)}
               <span style={{ fontWeight: 500 }}>{fileName}</span>
               <span style={{ color: 'var(--text-muted)', fontSize: '10px' }}>
-                L{s.start_line}-{s.end_line}
+                L{s.start_line}
               </span>
               {isSelected ? <ChevronUp size={11} /> : <ChevronDown size={11} />}
             </button>
@@ -205,7 +209,7 @@ export const SourcePanel: React.FC<SourcePanelProps> = ({ sources, repoName }) =
         })}
       </div>
 
-      {/* Display preview of chosen snippet right below */}
+      {/* Snippet Preview */}
       {selectedIdx !== null && sources[selectedIdx] && (
         <SourceSnippet
           chunk={sources[selectedIdx]}

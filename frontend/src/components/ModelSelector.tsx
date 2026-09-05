@@ -1,5 +1,5 @@
 import React from 'react';
-import { Cpu } from 'lucide-react';
+import { Cpu, ChevronDown, Sparkles } from 'lucide-react';
 
 interface ModelSelectorProps {
   provider: string;
@@ -9,44 +9,73 @@ interface ModelSelectorProps {
 }
 
 const MODELS = [
-  { provider: 'groq', model: 'qwen/qwen3.8-27b', label: 'Groq — Qwen 3.8 27B (Live AI Assistant ⚡ Recommended)' },
-  { provider: 'groq', model: 'qwen/qwen3.6-27b', label: 'Groq — Qwen 3.6 27B' },
-  { provider: 'mock', model: 'mock-code-expert', label: 'Local Mock Expert (Offline Template)' },
-  { provider: 'openai', model: 'gpt-4o-mini', label: 'OpenAI — GPT-4o-mini' },
-  { provider: 'anthropic', model: 'claude-3-5-haiku-latest', label: 'Anthropic — Claude 3.5 Haiku' },
+  { provider: 'groq', model: 'qwen/qwen3.8-27b', label: 'Qwen 3.8 27B', tag: 'Fast ⚡ Active', isLive: true },
+  { provider: 'groq', model: 'qwen/qwen3.6-27b', label: 'Qwen 3.6 27B', tag: 'Groq', isLive: true },
+  { provider: 'mock', model: 'mock-code-expert', label: 'Offline Assistant', tag: 'Local', isLive: false },
+  { provider: 'openai', model: 'gpt-4o-mini', label: 'GPT-4o Mini', tag: 'OpenAI', isLive: true },
+  { provider: 'anthropic', model: 'claude-3-5-haiku-latest', label: 'Claude 3.5 Haiku', tag: 'Anthropic', isLive: true },
 ];
 
 export const ModelSelector: React.FC<ModelSelectorProps> = ({ provider, model, onChange, disabled }) => {
   const currentKey = `${provider}:${model}`;
 
   return (
-    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-      <Cpu size={14} color="var(--text-muted)" />
-      <select
-        value={currentKey}
-        disabled={disabled}
-        onChange={(e) => {
-          const [p, m] = e.target.value.split(':');
-          onChange(p, m);
-        }}
-        style={{
-          background: 'var(--bg-surface)',
-          border: '1px solid var(--border-color)',
-          color: 'var(--text-primary)',
-          borderRadius: '6px',
-          padding: '4px 8px',
-          fontSize: '12px',
-          fontFamily: 'var(--font-mono)',
-          cursor: disabled ? 'not-allowed' : 'pointer',
-          outline: 'none'
-        }}
-      >
-        {MODELS.map((item) => (
-          <option key={`${item.provider}:${item.model}`} value={`${item.provider}:${item.model}`}>
-            {item.label}
-          </option>
-        ))}
-      </select>
+    <div style={{
+      position: 'relative',
+      display: 'inline-flex',
+      alignItems: 'center',
+    }}>
+      <div style={{
+        display: 'flex',
+        alignItems: 'center',
+        gap: '7px',
+        padding: '5px 10px',
+        background: 'rgba(255, 255, 255, 0.03)',
+        border: '1px solid var(--border-color)',
+        borderRadius: 'var(--radius-sm)',
+        transition: 'all 0.15s ease',
+        cursor: disabled ? 'not-allowed' : 'pointer',
+      }}>
+        <div style={{
+          width: '6px',
+          height: '6px',
+          borderRadius: '50%',
+          background: 'var(--accent-emerald)',
+          boxShadow: '0 0 8px var(--accent-emerald)',
+        }} />
+        <Cpu size={13} color="var(--text-muted)" />
+        <select
+          value={currentKey}
+          disabled={disabled}
+          onChange={(e) => {
+            const [p, m] = e.target.value.split(':');
+            onChange(p, m);
+          }}
+          style={{
+            background: 'transparent',
+            border: 'none',
+            color: 'var(--text-primary)',
+            fontSize: '12px',
+            fontWeight: 500,
+            fontFamily: 'var(--font-sans)',
+            cursor: disabled ? 'not-allowed' : 'pointer',
+            outline: 'none',
+            appearance: 'none',
+            paddingRight: '16px',
+          }}
+        >
+          {MODELS.map((item) => (
+            <option
+              key={`${item.provider}:${item.model}`}
+              value={`${item.provider}:${item.model}`}
+              style={{ background: '#121620', color: '#f8fafc' }}
+            >
+              {item.label} · {item.tag}
+            </option>
+          ))}
+        </select>
+        <ChevronDown size={11} color="var(--text-muted)" style={{ position: 'absolute', right: '10px', pointerEvents: 'none' }} />
+      </div>
     </div>
   );
 };
