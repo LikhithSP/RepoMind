@@ -54,16 +54,49 @@ export const MessageBubble: React.FC<MessageBubbleProps> = ({ message, repoName 
 
   const processedContent = isUser ? message.content : formatContentWithCitations(message.content, message.sources || []);
 
+  if (isUser) {
+    return (
+      <div
+        className="animate-fade-in"
+        style={{
+          display: 'flex',
+          justifyContent: 'flex-end',
+          padding: '16px 24px',
+          maxWidth: '860px',
+          margin: '0 auto',
+          width: '100%',
+        }}
+      >
+        <div
+          style={{
+            maxWidth: '75%',
+            background: 'var(--user-bubble-bg)',
+            border: '1px solid var(--user-bubble-border)',
+            borderRadius: '20px 20px 4px 20px',
+            padding: '12px 18px',
+            color: 'var(--text-primary)',
+            fontSize: '14px',
+            lineHeight: 1.6,
+            wordBreak: 'break-word',
+            boxShadow: 'var(--shadow-sm)',
+          }}
+        >
+          {message.content}
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div
       className="animate-fade-in"
       style={{
         display: 'flex',
         gap: '16px',
-        padding: '24px 28px',
-        background: isUser ? 'transparent' : 'var(--bg-surface)',
-        borderBottom: '1px solid var(--border-color)',
-        maxWidth: '920px',
+        padding: '24px 24px 32px',
+        background: 'none',
+        borderBottom: 'none',
+        maxWidth: '860px',
         margin: '0 auto',
         width: '100%',
         position: 'relative',
@@ -74,16 +107,16 @@ export const MessageBubble: React.FC<MessageBubbleProps> = ({ message, repoName 
         width: '32px',
         height: '32px',
         borderRadius: 'var(--radius-sm)',
-        background: isUser ? 'var(--bg-card)' : 'var(--accent-cyan-subtle)',
-        border: `1px solid ${isUser ? 'var(--border-color)' : 'var(--accent-cyan)'}`,
+        background: 'var(--accent-cyan-subtle)',
+        border: '1px solid var(--accent-cyan)',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
         flexShrink: 0,
         marginTop: '2px',
-        boxShadow: isUser ? 'none' : '0 0 16px -2px var(--accent-cyan-glow)',
+        boxShadow: '0 0 16px -2px var(--accent-cyan-glow)',
       }}>
-        {isUser ? <User size={15} color="var(--text-secondary)" /> : <Sparkles size={15} color="var(--accent-cyan)" />}
+        <Sparkles size={15} color="var(--accent-cyan)" />
       </div>
 
       <div style={{ flex: 1, minWidth: 0 }}>
@@ -95,29 +128,27 @@ export const MessageBubble: React.FC<MessageBubbleProps> = ({ message, repoName 
           marginBottom: '10px',
           fontSize: '12.5px',
         }}>
-          <span style={{ fontWeight: 600, color: isUser ? 'var(--text-primary)' : 'var(--accent-cyan)', letterSpacing: '-0.01em' }}>
-            {isUser ? 'You' : 'RepoMind Assistant'}
+          <span style={{ fontWeight: 600, color: 'var(--accent-cyan)', letterSpacing: '-0.01em' }}>
+            RepoMind Assistant
           </span>
-          {!isUser && (
-            <span style={{
-              fontSize: '10px',
-              fontFamily: 'var(--font-mono)',
-              background: 'var(--bg-card)',
-              border: '1px solid var(--border-color)',
-              color: 'var(--text-muted)',
-              padding: '1px 6px',
-              borderRadius: '4px',
-            }}>
-              AI Grounded
-            </span>
-          )}
+          <span style={{
+            fontSize: '10px',
+            fontFamily: 'var(--font-mono)',
+            background: 'var(--bg-card)',
+            border: '1px solid var(--border-color)',
+            color: 'var(--text-muted)',
+            padding: '1px 6px',
+            borderRadius: '4px',
+          }}>
+            AI Grounded
+          </span>
         </div>
 
         {/* Message Body */}
         <div style={{
-          color: isUser ? 'var(--text-primary)' : 'var(--text-secondary)',
+          color: 'var(--text-secondary)',
           lineHeight: '1.7',
-          fontSize: '14px',
+          fontSize: '14.5px',
         }}>
           <ReactMarkdown
             components={{
