@@ -68,7 +68,7 @@ export const ModelSelector: React.FC<ModelSelectorProps> = ({ provider, model, o
             <option
               key={`${item.provider}:${item.model}`}
               value={`${item.provider}:${item.model}`}
-              style={{ background: '#121620', color: '#f8fafc' }}
+              style={{ background: 'var(--bg-surface)', color: 'var(--text-primary)' }}
             >
               {item.label} · {item.tag}
             </option>

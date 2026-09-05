@@ -241,7 +241,7 @@ export default function Home() {
             <Terminal size={15} strokeWidth={2.5} />
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <span style={{ fontWeight: 700, fontSize: '14.5px', letterSpacing: '-0.02em', color: '#fff' }}>
+            <span style={{ fontWeight: 700, fontSize: '14.5px', letterSpacing: '-0.02em', color: 'var(--text-primary)' }}>
               RepoMind
             </span>
             <span style={{
@@ -452,21 +452,19 @@ export default function Home() {
             style={{
               display: 'flex',
               alignItems: 'center',
-              background: 'rgba(255, 255, 255, 0.03)',
-              border: '1px solid rgba(255, 255, 255, 0.12)',
+              background: 'var(--input-bg)',
+              border: '1px solid var(--input-border)',
               borderRadius: '9999px',
               padding: '6px 14px 6px 20px',
               gap: '10px',
-              boxShadow: '0 4px 20px -2px rgba(0, 0, 0, 0.5)',
+              boxShadow: 'var(--input-shadow)',
               transition: 'border-color 0.2s ease, background 0.2s ease, box-shadow 0.2s ease',
             }}
             onFocus={(e) => {
-              e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.25)';
-              e.currentTarget.style.background = 'rgba(255, 255, 255, 0.05)';
+              e.currentTarget.style.borderColor = 'var(--accent-cyan)';
             }}
             onBlur={(e) => {
-              e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.12)';
-              e.currentTarget.style.background = 'rgba(255, 255, 255, 0.03)';
+              e.currentTarget.style.borderColor = 'var(--input-border)';
             }}
           >
             <input
@@ -480,7 +478,7 @@ export default function Home() {
                 flex: 1,
                 background: 'transparent',
                 border: 'none',
-                color: '#e2e8f0',
+                color: 'var(--text-primary)',
                 fontSize: '13.5px',
                 outline: 'none',
                 padding: '7px 0',
@@ -493,7 +491,7 @@ export default function Home() {
               style={{
                 background: 'transparent',
                 border: 'none',
-                color: isStreaming || !input.trim() ? 'rgba(255, 255, 255, 0.25)' : 'var(--accent-cyan)',
+                color: isStreaming || !input.trim() ? 'var(--text-muted)' : 'var(--accent-cyan)',
                 cursor: isStreaming || !input.trim() ? 'default' : 'pointer',
                 display: 'flex',
                 alignItems: 'center',
@@ -510,15 +508,6 @@ export default function Home() {
               )}
             </button>
           </form>
-          <div style={{
-            textAlign: 'center',
-            fontSize: '11px',
-            color: 'rgba(255, 255, 255, 0.4)',
-            marginTop: '8px',
-            letterSpacing: '0.01em',
-          }}>
-            RepoMind answers can be cross-referenced with cited repository files.
-          </div>
         </div>
       </div>
     </div>
