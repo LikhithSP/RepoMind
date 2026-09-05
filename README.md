@@ -166,15 +166,3 @@ python -m coderag.eval.run_eval
 
 ---
 
-## 9. Interview Defense: Why These Architectural Choices?
-
-1. **Why AST chunking over fixed token splitting?**
-   Fixed window chunking cuts functions in half, dropping vital variable definitions, decorators, or return statements. AST chunking guarantees semantic cohesion.
-2. **Why BM25 + Dense Hybrid Search?**
-   Dense embeddings compress meaning into vector space but often fail on precise identifier names (e.g. `Session.prepare_request`). BM25 provides exact keyword matching.
-3. **Why Cross-Encoder Re-ranking?**
-   Bi-encoder embeddings independently vectorize query and documents. Cross-encoders score query and document candidate pairs together through all attention layers, dramatically boosting top-5 precision at negligible latency cost (~15ms).
-4. **Why Reciprocal Rank Fusion (RRF)?**
-   BM25 scores and vector cosine similarities live on completely different scales and distributions. RRF normalizes rank positions rather than arbitrary raw scores, creating a stable, tuning-free fusion.
-5. **Why Guardrails with Confidence Logits?**
-   Cross-encoders assign negative logits to irrelevant context. Thresholding at `-4.5` prevents LLM hallucinations when questions are completely out-of-scope for the codebase.
