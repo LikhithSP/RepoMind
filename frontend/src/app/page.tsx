@@ -316,17 +316,6 @@ export default function Home() {
             <span>Ingest Repo</span>
           </button>
 
-          {/* Model Selector */}
-          <ModelSelector
-            provider={provider}
-            model={model}
-            onChange={(p, m) => {
-              setProvider(p);
-              setModel(m);
-            }}
-            disabled={isStreaming}
-          />
-
           {/* Dark / Light Mode Toggle */}
           <button
             onClick={toggleTheme}
@@ -393,7 +382,7 @@ export default function Home() {
               letterSpacing: '-0.03em',
               color: 'var(--text-primary)',
             }}>
-              Ask anything about{' '}<span style={{ color: 'var(--accent-cyan)' }}>{repoName}</span>
+              Ask anything about <span style={{ marginLeft: '6px', color: 'var(--accent-cyan)' }}>{repoName}</span>
             </h1>
 
             <p style={{
