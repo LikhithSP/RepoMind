@@ -108,7 +108,8 @@ async def health_check():
         indexed_points=max(count, len(bm25.corpus_chunks)),
         bm25_indexed_chunks=len(bm25.corpus_chunks),
         repo_name=active_repo_name,
-        commit_sha=active_commit_sha
+        commit_sha=active_commit_sha,
+        has_groq_key=bool(settings.GROQ_API_KEY and settings.GROQ_API_KEY.strip())
     )
 
 
@@ -150,7 +151,11 @@ async def query_endpoint(req: QueryRequest):
     router = get_query_router()
     retriever = HybridRetriever()
     reranker = get_reranker()
-    llm = LLMClient(provider=req.provider or settings.LLM_PROVIDER, model=req.model or settings.DEFAULT_MODEL)
+    llm = LLMClient(
+        provider=req.provider or settings.LLM_PROVIDER,
+        model=req.model or settings.DEFAULT_MODEL,
+        api_key=req.api_key
+    )
 
     # Run CPU retrieval and reranking in thread pool to prevent blocking event loop
     loop = asyncio.get_running_loop()

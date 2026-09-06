@@ -11,6 +11,7 @@ class QueryRequest(BaseModel):
     provider: Optional[Literal["mock", "groq", "openai", "anthropic"]] = Field(None, description="LLM provider")
     filter_type: Optional[Literal["code", "doc", "issue", "mixed"]] = Field(None, description="Optional manual override for retrieval type")
     top_k: Optional[int] = Field(5, ge=1, le=20, description="Number of final context chunks to use")
+    api_key: Optional[str] = Field(None, description="Optional dynamic user-supplied API key")
 
 
 class RetrieveRequest(BaseModel):
@@ -71,3 +72,4 @@ class HealthResponse(BaseModel):
     bm25_indexed_chunks: int
     repo_name: str
     commit_sha: Optional[str] = None
+    has_groq_key: bool = False

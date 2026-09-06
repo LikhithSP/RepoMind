@@ -140,9 +140,7 @@ export const RepoIngestModal: React.FC<RepoIngestModalProps> = ({ isOpen, onClos
     <div style={{
       position: 'fixed',
       inset: 0,
-      background: 'rgba(0, 0, 0, 0.38)',
-      backdropFilter: 'blur(2px)',
-      WebkitBackdropFilter: 'blur(2px)',
+      background: 'rgba(0, 0, 0, 0.45)',
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
@@ -150,13 +148,15 @@ export const RepoIngestModal: React.FC<RepoIngestModalProps> = ({ isOpen, onClos
       padding: '20px'
     }}>
       <div style={{
-        background: 'var(--bg-surface)',
-        border: '1px solid var(--border-color)',
+        background: 'rgba(15, 18, 25, 0.96)',
+        backdropFilter: 'blur(20px)',
+        WebkitBackdropFilter: 'blur(20px)',
+        border: '1px solid rgba(255, 255, 255, 0.1)',
         borderRadius: '14px',
         width: '100%',
         maxWidth: '520px',
         padding: '26px',
-        boxShadow: '0 25px 50px rgba(0, 0, 0, 0.6)',
+        boxShadow: '0 24px 60px -8px rgba(0, 0, 0, 0.8), 0 0 1px 1px rgba(255, 255, 255, 0.05)',
         position: 'relative',
         overflow: 'hidden'
       }}>

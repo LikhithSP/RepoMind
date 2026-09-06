@@ -1,11 +1,12 @@
 'use client';
 
 import React, { useState, useRef, useEffect } from 'react';
-import { Send, Terminal, GitBranch, RefreshCw, Layers, PlusCircle, Plus, ArrowRight, ShieldCheck, Sparkles, Database, Sun, Moon } from 'lucide-react';
-import { ChatMessage, SourceChunk, TraceInfo } from '../lib/types';
+import { Send, Terminal, GitBranch, RefreshCw, Layers, PlusCircle, Plus, ArrowRight, ShieldCheck, Sparkles, Database, Sun, Moon, PanelLeft, PanelLeftClose } from 'lucide-react';
+import { ChatMessage, SourceChunk, TraceInfo, ChatSession } from '../lib/types';
 import { MessageBubble } from '../components/MessageBubble';
 import { ModelSelector } from '../components/ModelSelector';
 import { RepoIngestModal } from '../components/RepoIngestModal';
+import { Sidebar } from '../components/Sidebar';
 
 export default function Home() {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
@@ -18,6 +19,81 @@ export default function Home() {
   const [commitSha, setCommitSha] = useState<string | null>(null);
   const [indexedPoints, setIndexedPoints] = useState<number | null>(null);
   const [isIngestOpen, setIsIngestOpen] = useState(false);
+  const [hasEnvGroqKey, setHasEnvGroqKey] = useState(false);
+  const [userApiKey, setUserApiKey] = useState('');
+
+  // Check backend health and .env GROQ key status on load
+  useEffect(() => {
+    fetch('http://localhost:8000/health')
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.has_groq_key) {
+          setHasEnvGroqKey(true);
+        }
+      })
+      .catch(() => {});
+
+    try {
+      const savedKey = localStorage.getItem('repomind_user_groq_key') || '';
+      setUserApiKey(savedKey);
+    } catch (_) {}
+  }, []);
+
+  // Sidebar & Chat Sessions Cache State
+  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const [sessions, setSessions] = useState<ChatSession[]>([]);
+  const [currentSessionId, setCurrentSessionId] = useState<string | null>(null);
+
+  // Load chat sessions from localStorage cache on initial load
+  useEffect(() => {
+    try {
+      const cached = localStorage.getItem('repomind_chat_sessions');
+      if (cached) {
+        const parsed: ChatSession[] = JSON.parse(cached);
+        setSessions(parsed);
+      }
+    } catch (_) {}
+  }, []);
+
+  // Save sessions to localStorage whenever sessions state changes
+  const saveSessionsToCache = (newSessions: ChatSession[]) => {
+    setSessions(newSessions);
+    try {
+      localStorage.setItem('repomind_chat_sessions', JSON.stringify(newSessions));
+    } catch (_) {}
+  };
+
+  // Switch to or load an existing session from history
+  const handleSelectSession = (sessionId: string) => {
+    const session = sessions.find((s) => s.id === sessionId);
+    if (!session) return;
+    setCurrentSessionId(session.id);
+    setMessages(session.messages || []);
+    if (session.repoName) setRepoName(session.repoName);
+    if (session.commitSha) setCommitSha(session.commitSha);
+  };
+
+  // Start fresh chat session
+  const handleNewChat = () => {
+    setCurrentSessionId(null);
+    setMessages([]);
+    setInput('');
+  };
+
+  // Delete an individual chat session
+  const handleDeleteSession = (sessionId: string) => {
+    const updated = sessions.filter((s) => s.id !== sessionId);
+    saveSessionsToCache(updated);
+    if (currentSessionId === sessionId) {
+      handleNewChat();
+    }
+  };
+
+  // Clear all chat sessions
+  const handleClearAllSessions = () => {
+    saveSessionsToCache([]);
+    handleNewChat();
+  };
 
   // Initialize theme from localStorage or system preference
   useEffect(() => {
@@ -108,7 +184,8 @@ export default function Home() {
           query,
           provider,
           model,
-          top_k: 5
+          top_k: 5,
+          api_key: userApiKey || undefined,
         }),
       });
 
@@ -179,13 +256,59 @@ export default function Home() {
         }
       }
 
-      setMessages((prev) =>
-        prev.map((msg) =>
+      // Sync finalized conversation into chat session cache
+      setMessages((prev) => {
+        const finalized = prev.map((msg) =>
           msg.id === assistantPlaceholderId
             ? { ...msg, isStreaming: false }
             : msg
-        )
-      );
+        );
+
+        // Update or create session
+        const now = Date.now();
+        const firstUserMsg = finalized.find((m) => m.role === 'user');
+        const sessionTitle = firstUserMsg ? firstUserMsg.content.slice(0, 42) + (firstUserMsg.content.length > 42 ? '...' : '') : 'New Session';
+        
+        let targetId = currentSessionId;
+        if (!targetId) {
+          targetId = `session_${now}`;
+          setCurrentSessionId(targetId);
+        }
+
+        setSessions((prevSessions) => {
+          const existingIdx = prevSessions.findIndex((s) => s.id === targetId);
+          let updated: ChatSession[];
+          if (existingIdx >= 0) {
+            updated = [...prevSessions];
+            updated[existingIdx] = {
+              ...updated[existingIdx],
+              messages: finalized,
+              repoName: repoName || updated[existingIdx].repoName,
+              commitSha: commitSha || updated[existingIdx].commitSha,
+              updatedAt: now,
+            };
+          } else {
+            const newSession: ChatSession = {
+              id: targetId!,
+              title: sessionTitle,
+              repoName: repoName,
+              commitSha: commitSha,
+              messages: finalized,
+              createdAt: now,
+              updatedAt: now,
+            };
+            updated = [newSession, ...prevSessions];
+          }
+
+          try {
+            localStorage.setItem('repomind_chat_sessions', JSON.stringify(updated));
+          } catch (_) {}
+
+          return updated;
+        });
+
+        return finalized;
+      });
     } catch (err) {
       setMessages((prev) =>
         prev.map((msg) =>
@@ -203,56 +326,104 @@ export default function Home() {
     }
   };
 
+  const hasStartedChat = messages.length > 0;
+
   return (
-    <div className="ambient-bg" style={{ display: 'flex', flexDirection: 'column', height: '100vh', overflow: 'hidden' }}>
-      {/* Top Navbar */}
-      <header className="glass-panel" style={{
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        padding: '10px 24px',
-        borderBottom: '1px solid var(--border-color)',
-        zIndex: 10,
-      }}>
-        {/* Brand */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-          <div style={{
-            width: '28px',
-            height: '28px',
-            borderRadius: 'var(--radius-sm)',
-            background: 'var(--accent-cyan-subtle)',
-            border: '1px solid var(--accent-cyan)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            color: 'var(--accent-cyan)',
-            boxShadow: '0 0 12px var(--accent-cyan-glow)',
-          }}>
-            <Terminal size={15} strokeWidth={2.5} />
-          </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <span style={{ fontWeight: 700, fontSize: '14.5px', letterSpacing: '-0.02em', color: 'var(--text-primary)' }}>
-              RepoMind
-            </span>
-            <span style={{
-              fontSize: '10.5px',
-              fontWeight: 500,
-              background: 'rgba(255, 255, 255, 0.04)',
-              border: '1px solid var(--border-color)',
-              color: 'var(--text-muted)',
-              padding: '1px 6px',
-              borderRadius: '4px',
-              fontFamily: 'var(--font-mono)',
+    <div style={{ display: 'flex', height: '100vh', width: '100vw', overflow: 'hidden' }}>
+      {/* ChatGPT / Gemini style Collapsible History Sidebar */}
+      <Sidebar
+        isOpen={isSidebarOpen}
+        onToggle={() => setIsSidebarOpen(!isSidebarOpen)}
+        sessions={sessions}
+        currentSessionId={currentSessionId}
+        onSelectSession={handleSelectSession}
+        onNewChat={handleNewChat}
+        onDeleteSession={handleDeleteSession}
+        onClearAll={handleClearAllSessions}
+      />
+
+      {/* Main Content Area */}
+      <div 
+        className={hasStartedChat ? "ambient-bg chat-active" : "ambient-bg"} 
+        style={{ flex: 1, display: 'flex', flexDirection: 'column', height: '100vh', overflow: 'hidden', minWidth: 0 }}
+      >
+        {/* Top Navbar */}
+        <header className="glass-panel" style={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          padding: '10px 20px',
+          borderBottom: '1px solid var(--border-color)',
+          zIndex: 10,
+        }}>
+          {/* Brand & Sidebar Toggle */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+            <button
+              onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+              title={isSidebarOpen ? "Collapse sidebar" : "Open sidebar"}
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                width: '32px',
+                height: '32px',
+                borderRadius: 'var(--radius-sm)',
+                background: 'var(--bg-card)',
+                border: '1px solid var(--border-color)',
+                color: 'var(--text-secondary)',
+                cursor: 'pointer',
+                transition: 'all 0.15s ease',
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.color = 'var(--accent-cyan)';
+                e.currentTarget.style.borderColor = 'var(--border-focus)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.color = 'var(--text-secondary)';
+                e.currentTarget.style.borderColor = 'var(--border-color)';
+              }}
+            >
+              {isSidebarOpen ? <PanelLeftClose size={16} /> : <PanelLeft size={16} />}
+            </button>
+
+            <div style={{
+              width: '28px',
+              height: '28px',
+              borderRadius: 'var(--radius-sm)',
+              background: 'var(--accent-cyan-subtle)',
+              border: '1px solid var(--accent-cyan)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              color: 'var(--accent-cyan)',
+              boxShadow: '0 0 12px var(--accent-cyan-glow)',
             }}>
-              v0.1
-            </span>
+              <Terminal size={15} strokeWidth={2.5} />
+            </div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <span style={{ fontWeight: 700, fontSize: '14.5px', letterSpacing: '-0.02em', color: 'var(--text-primary)' }}>
+                RepoMind
+              </span>
+              <span style={{
+                fontSize: '10.5px',
+                fontWeight: 500,
+                background: 'rgba(255, 255, 255, 0.04)',
+                border: '1px solid var(--border-color)',
+                color: 'var(--text-muted)',
+                padding: '1px 6px',
+                borderRadius: '4px',
+                fontFamily: 'var(--font-mono)',
+              }}>
+                v0.1
+              </span>
+            </div>
           </div>
-        </div>
 
         {/* Action Controls & Active Repo Pill */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
           {/* Active Repo Badge / Select Repo Button */}
           {repoName ? (
+            <>
             <div style={{
               display: 'flex',
               alignItems: 'center',
@@ -285,6 +456,38 @@ export default function Home() {
                 </span>
               )}
             </div>
+
+            {/* Ingest New Repo Button */}
+            <button
+              onClick={() => setIsIngestOpen(true)}
+              title="Ingest a new GitHub repository"
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '5px',
+                padding: '4px 10px',
+                background: 'rgba(56, 189, 248, 0.08)',
+                border: '1px solid var(--accent-cyan-subtle)',
+                borderRadius: 'var(--radius-sm)',
+                fontSize: '12px',
+                color: 'var(--accent-cyan)',
+                cursor: 'pointer',
+                fontWeight: 500,
+                transition: 'all 0.15s ease',
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.background = 'rgba(56, 189, 248, 0.15)';
+                e.currentTarget.style.borderColor = 'var(--border-focus)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.background = 'rgba(56, 189, 248, 0.08)';
+                e.currentTarget.style.borderColor = 'var(--accent-cyan-subtle)';
+              }}
+            >
+              <Plus size={13} strokeWidth={2.5} />
+              <span>Ingest Repo</span>
+            </button>
+            </>
           ) : (
             <button
               onClick={() => setIsIngestOpen(true)}
@@ -304,7 +507,39 @@ export default function Home() {
               }}
             >
               <GitBranch size={13} color="var(--accent-cyan)" />
-              <span>Select Repository</span>
+              <span>Ingest Repository</span>
+            </button>
+          )}
+
+          {/* New Chat Button (shown only when sidebar is closed to avoid duplicate) */}
+          {hasStartedChat && !isSidebarOpen && (
+            <button
+              onClick={handleNewChat}
+              title="Start a new chat session"
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '5px',
+                background: 'var(--bg-card)',
+                border: '1px solid var(--border-color)',
+                color: 'var(--text-secondary)',
+                borderRadius: 'var(--radius-sm)',
+                padding: '5px 9px',
+                fontSize: '12px',
+                cursor: 'pointer',
+                transition: 'all 0.15s ease',
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.color = 'var(--text-primary)';
+                e.currentTarget.style.borderColor = 'var(--border-focus)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.color = 'var(--text-secondary)';
+                e.currentTarget.style.borderColor = 'var(--border-color)';
+              }}
+            >
+              <Plus size={13} strokeWidth={2.5} />
+              <span>New Chat</span>
             </button>
           )}
 
@@ -391,8 +626,8 @@ export default function Home() {
               Accurate, verified answers grounded directly in the codebase with exact file lines, function definitions, and interactive citations.
             </p>
 
-            {/* Centered Search Bar */}
-            <div className="search-container-transition" style={{ width: '100%', maxWidth: '700px' }}>
+            {/* Centered Large Search Bar on Home Page */}
+            <div className="search-container-transition" style={{ width: '100%', maxWidth: '780px' }}>
               <form
                 onSubmit={(e) => {
                   e.preventDefault();
@@ -404,16 +639,18 @@ export default function Home() {
                   background: 'var(--input-bg)',
                   border: '1px solid var(--input-border)',
                   borderRadius: '9999px',
-                  padding: '6px 10px 6px 12px',
-                  gap: '8px',
+                  padding: '10px 14px 10px 18px',
+                  gap: '12px',
                   boxShadow: 'var(--input-shadow)',
                   transition: 'border-color 0.2s ease, background 0.2s ease, box-shadow 0.2s ease',
                 }}
                 onFocus={(e) => {
                   e.currentTarget.style.borderColor = 'var(--accent-cyan)';
+                  e.currentTarget.style.boxShadow = '0 6px 30px -2px rgba(56, 189, 248, 0.25)';
                 }}
                 onBlur={(e) => {
                   e.currentTarget.style.borderColor = 'var(--input-border)';
+                  e.currentTarget.style.boxShadow = 'var(--input-shadow)';
                 }}
               >
                 {/* Clean Simple '+' Ingest Action Button */}
@@ -429,7 +666,7 @@ export default function Home() {
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    padding: '4px',
+                    padding: '6px',
                     cursor: isStreaming ? 'not-allowed' : 'pointer',
                     flexShrink: 0,
                     transition: 'color 0.15s ease, transform 0.1s ease',
@@ -437,14 +674,14 @@ export default function Home() {
                   onMouseEnter={(e) => e.currentTarget.style.color = 'var(--text-primary)'}
                   onMouseLeave={(e) => e.currentTarget.style.color = 'var(--text-secondary)'}
                 >
-                  <Plus size={18} strokeWidth={2} />
+                  <Plus size={22} strokeWidth={2.2} />
                 </button>
 
                 <input
                   type="text"
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
-                  placeholder="Query architecture, functions, files, or flow..."
+                  placeholder="Ask RepoMind..."
                   disabled={isStreaming}
                   autoFocus
                   style={{
@@ -452,18 +689,22 @@ export default function Home() {
                     background: 'transparent',
                     border: 'none',
                     color: 'var(--text-primary)',
-                    fontSize: '14px',
+                    fontSize: '16px',
+                    fontWeight: 400,
                     outline: 'none',
-                    padding: '6px 0',
+                    padding: '8px 0',
                     fontFamily: 'var(--font-sans)',
                   }}
                 />
                 
-                {/* Embedded Model Selector */}
+                {/* Embedded Model Selector with Groq API Key configuration */}
                 <ModelSelector
                   provider={provider}
                   model={model}
                   compact={true}
+                  hasEnvGroqKey={hasEnvGroqKey}
+                  userApiKey={userApiKey}
+                  onApiKeyChange={(k) => setUserApiKey(k)}
                   onChange={(p, m) => {
                     setProvider(p);
                     setModel(m);
@@ -475,22 +716,24 @@ export default function Home() {
                   type="submit"
                   disabled={isStreaming || !input.trim()}
                   style={{
-                    background: 'transparent',
+                    background: isStreaming || !input.trim() ? 'transparent' : 'var(--accent-cyan)',
                     border: 'none',
-                    color: isStreaming || !input.trim() ? 'var(--text-muted)' : 'var(--accent-cyan)',
+                    color: isStreaming || !input.trim() ? 'var(--text-muted)' : '#07080c',
                     cursor: isStreaming || !input.trim() ? 'default' : 'pointer',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    padding: '6px',
+                    width: '38px',
+                    height: '38px',
                     borderRadius: '50%',
-                    transition: 'color 0.15s ease, transform 0.1s ease',
+                    flexShrink: 0,
+                    transition: 'all 0.15s ease',
                   }}
                 >
                   {isStreaming ? (
-                    <RefreshCw size={15} className="animate-pulse-slow" color="var(--accent-cyan)" />
+                    <RefreshCw size={18} className="animate-pulse-slow" color="var(--accent-cyan)" />
                   ) : (
-                    <Send size={15} />
+                    <Send size={18} strokeWidth={2.2} />
                   )}
                 </button>
               </form>
@@ -508,7 +751,7 @@ export default function Home() {
         ) : (
           <div style={{ paddingBottom: '24px' }}>
             {messages.map((msg) => (
-              <MessageBubble key={msg.id} message={msg} repoName={repoName} />
+              <MessageBubble key={msg.id} message={msg} repoName={repoName || undefined} />
             ))}
             <div ref={messagesEndRef} />
           </div>
@@ -577,7 +820,7 @@ export default function Home() {
                 type="text"
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
-                placeholder="Query architecture, functions, files, or flow..."
+                placeholder="Ask RepoMind..."
                 disabled={isStreaming}
                 autoFocus
                 style={{
@@ -592,11 +835,14 @@ export default function Home() {
                 }}
               />
 
-              {/* Embedded Model Selector */}
+              {/* Embedded Model Selector with Groq API Key configuration */}
               <ModelSelector
                 provider={provider}
                 model={model}
                 compact={true}
+                hasEnvGroqKey={hasEnvGroqKey}
+                userApiKey={userApiKey}
+                onApiKeyChange={(k) => setUserApiKey(k)}
                 onChange={(p, m) => {
                   setProvider(p);
                   setModel(m);
@@ -639,6 +885,7 @@ export default function Home() {
           </div>
         </div>
       )}
+      </div>
     </div>
   );
 }

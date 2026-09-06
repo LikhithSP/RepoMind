@@ -11,9 +11,10 @@ from coderag.generation.prompts import SYSTEM_PROMPT
 
 
 class LLMClient:
-    def __init__(self, provider: Optional[str] = None, model: Optional[str] = None):
+    def __init__(self, provider: Optional[str] = None, model: Optional[str] = None, api_key: Optional[str] = None):
         self.provider = provider or settings.LLM_PROVIDER
         self.model = model or settings.DEFAULT_MODEL
+        self.api_key = api_key
 
     async def generate_stream(
         self,
@@ -22,8 +23,12 @@ class LLMClient:
         temperature: float = 0.1
     ) -> AsyncGenerator[str, None]:
         """Streams response token by token."""
-        if self.provider == "groq" and settings.GROQ_API_KEY:
-            async for token in self._stream_groq(prompt, system_prompt, temperature):
+        groq_key = self.api_key or settings.GROQ_API_KEY
+        openai_key = self.api_key or settings.OPENAI_API_KEY
+        anthropic_key = self.api_key or settings.ANTHROPIC_API_KEY
+
+        if self.provider == "groq" and groq_key:
+            async for token in self._stream_groq(prompt, system_prompt, temperature, api_key=groq_key):
                 yield token
         elif self.provider == "openai" and settings.OPENAI_API_KEY:
             async for token in self._stream_openai(prompt, system_prompt, temperature):
@@ -48,9 +53,10 @@ class LLMClient:
             chunks.append(token)
         return "".join(chunks)
 
-    async def _stream_groq(self, prompt: str, system_prompt: str, temperature: float) -> AsyncGenerator[str, None]:
+    async def _stream_groq(self, prompt: str, system_prompt: str, temperature: float, api_key: Optional[str] = None) -> AsyncGenerator[str, None]:
         from groq import AsyncGroq
-        client = AsyncGroq(api_key=settings.GROQ_API_KEY)
+        effective_key = api_key or self.api_key or settings.GROQ_API_KEY
+        client = AsyncGroq(api_key=effective_key)
         model_name = self.model if self.model else "qwen/qwen3.8-27b"
         stream = await client.chat.completions.create(
             model=model_name,

@@ -11,7 +11,14 @@
   <img src="./preview%202.png" alt="RepoMind Grounded Codebase Answer with Citations" width="100%" />
 </div>
 
-**RepoMind** is an agentic, production-grade **RAG Project** built specifically for engineering teams and deep codebase exploration. It ingests any public or private Git repository (parsing AST-chunked syntax trees, markdown documentation hierarchies, and GitHub issue threads), conducts **hybrid retrieval** (BM25 sparse keyword matching + BAAI/bge-small-en-v1.5 dense vector embeddings fused via Reciprocal Rank Fusion), refines candidate code chunks with a **cross-encoder re-ranker** (`ms-marco-MiniLM-L-6-v2`), and streams answers in real time with interactive citations, exact `[file:line-range]` references, and anti-hallucination guardrails.
+> **RepoMind** is an agentic, production-grade **Codebase Intelligence & RAG System** engineered for deep codebase exploration, architectural discovery, and grounded technical inquiry.
+
+### Key Capabilities at a Glance
+
+* **AST-Aware Repository Ingestion**: Ingests public or private Git repositories by parsing language-specific abstract syntax trees (classes, functions, interfaces), markdown documentation hierarchies, and GitHub issue threads.
+* **Hybrid Retrieval (Dense + Sparse)**: Combines dense vector semantics (`BAAI/bge-small-en-v1.5`) via Qdrant with sparse keyword matching (`BM25`), seamlessly fused via **Reciprocal Rank Fusion (RRF)**.
+* **Cross-Encoder Precision Re-Ranking**: Filters and scores candidate code chunks using `ms-marco-MiniLM-L-6-v2` for high signal-to-noise code retrieval.
+* **Verified Grounded Generation**: Streams answers with interactive citations, exact `[file:line-range]` references, and strict anti-hallucination guardrails.
 
 ---
 
@@ -100,12 +107,29 @@ Evaluated against a hand-crafted ground truth benchmark (`coderag/eval/qa_datase
 
 ---
 
-## 5. Dev-Tool Frontend UI
+## 5. Dev-Tool Frontend UI & Experience
 
-RepoMind features a sleek, developer-centric interface built with Next.js 14 and Vanilla CSS:
-- **Instant Onboarding**: Automatically opens the ingest modal for first-time visitors so they can ingest their desired GitHub repository.
-- **Dynamic Session Switching**: Ingest new repositories at any time via the search bar `+` button to start clean sessions.
-- **Model Selector**: Switch effortlessly between Groq (Qwen 3.8 27B / Qwen 3.6 27B), OpenAI (GPT-4o Mini), Anthropic (Claude 3.5 Haiku), and Offline Local Assistant.
+RepoMind features a sleek, developer-centric interface built with **Next.js 14** and modern **Glassmorphic UI**:
+
+- **Dynamic Groq API Key Management**:
+  - Connect your own Groq API key directly via the UI modal with secure browser storage.
+  - Automatic backend detection of server-level `GROQ_API_KEY` in `.env` with seamless client-side override.
+  - Enables blazing-fast inference using models like `qwen/qwen3.8-27b` and `llama-3.3-70b-versatile`.
+- **Collapsible Chat Session History Sidebar**:
+  - Google Sans typography and modern rounded session pills.
+  - Full multi-session persistence backed by browser `localStorage`.
+  - Create new sessions, switch seamlessly between previous conversations, delete specific chats, or clear history.
+- **Top Navigation Bar & Action Controls**:
+  - Dedicated **"+ Ingest Repo"** action button right in the topbar for zero-friction repository onboarding.
+  - Smart conditional controls: the topbar "New Chat" button automatically hides when the sidebar is open to eliminate visual clutter.
+  - Live active repository badge showing repository name, commit SHA, and total indexed chunks.
+- **Adaptive Ambient Sci-Fi Mesh**:
+  - Dynamic cyber-mesh wireframe background on the landing page that automatically transitions to an ultra-clean, distraction-free solid dark slate background once chatting starts.
+  - Glassmorphic modal overlays without harsh box-shadow artifacts or murky cutouts.
+- **Expanded Google-Style Search Experience**:
+  - Large, prominent central search input (`maxWidth: 780px`) on the home screen with "Ask RepoMind..." placeholder.
+  - Automatically transitions to a compact conversational dock once a conversation begins.
+- **Model Selector**: Switch effortlessly between Groq, OpenAI (GPT-4o Mini), Anthropic (Claude 3.5 Haiku), and Offline Local Assistant.
 - **Live Pipeline Trace**: Inspect router classification intent, candidate retrieval counts, reranker confidence scores, and latency for every query.
 - **Interactive Citations**: Clickable source cards with syntax-highlighted code snippets and deep links to GitHub file lines.
 - **Theme Support**: Seamless toggle between sleek dark mode and high-contrast light mode.
@@ -116,8 +140,8 @@ RepoMind features a sleek, developer-centric interface built with Next.js 14 and
 
 The FastAPI backend exposes the following REST and SSE endpoints:
 
-- `GET /health`: Returns service health status, connected vector database status, active repository name, commit SHA, and indexed chunk count.
-- `POST /query`: SSE streaming endpoint. Streams token-by-token LLM responses, followed by retrieved source snippets and pipeline trace metadata upon completion.
+- `GET /health`: Returns service health status, connected vector database status, active repository name, commit SHA, indexed chunk count, and `has_groq_key` detection.
+- `POST /query`: SSE streaming endpoint. Accepts `query`, `history`, `model`, and optional client-provided `api_key`. Streams token-by-token LLM responses, followed by retrieved source snippets and pipeline trace metadata upon completion.
 - `POST /retrieve`: Raw retrieval endpoint returning hybrid RRF and cross-encoder ranked candidate chunks without triggering LLM generation.
 - `POST /reindex`: SSE streaming endpoint for on-demand repository cloning, AST chunking, embedding, and indexing.
 

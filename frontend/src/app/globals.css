@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Google+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500&display=swap');
 
 :root {
   /* Default Dark Mode (Zinc / Slate Deep Theme) */
@@ -26,9 +26,9 @@
   
   --code-bg: #07080c;
   --glass-bg: rgba(15, 18, 25, 0.75);
-  --input-bg: rgba(255, 255, 255, 0.03);
+  --input-bg: #151923;
   --input-border: rgba(255, 255, 255, 0.12);
-  --input-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.45);
+  --input-shadow: 0 4px 24px -2px rgba(0, 0, 0, 0.6);
   --user-bubble-bg: #1c212c;
   --user-bubble-border: rgba(255, 255, 255, 0.08);
   
@@ -37,7 +37,16 @@
   --radius-lg: 14px;
   --radius-xl: 18px;
   
+  --sidebar-bg: #0b0e14;
+  --sidebar-hover: rgba(255, 255, 255, 0.05);
+  --sidebar-active: rgba(255, 255, 255, 0.1);
+  --sidebar-border: rgba(255, 255, 255, 0.06);
+  --sidebar-text: #e3e3e3;
+  --sidebar-muted: #c4c7c5;
+  --sidebar-faint: #8e918f;
+
   --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
+  --font-google: 'Google Sans', 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
   
   --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.2);
@@ -77,6 +86,14 @@
   --user-bubble-bg: #f1f5f9;
   --user-bubble-border: rgba(15, 23, 42, 0.1);
   
+  --sidebar-bg: #f8fafd;
+  --sidebar-hover: rgba(0, 0, 0, 0.05);
+  --sidebar-active: #e3e3e3;
+  --sidebar-border: rgba(0, 0, 0, 0.06);
+  --sidebar-text: #1f1f1f;
+  --sidebar-muted: #444746;
+  --sidebar-faint: #727775;
+
   --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.04);
   --shadow-md: 0 4px 12px -2px rgba(0, 0, 0, 0.06);
   --shadow-lg: 0 12px 24px -4px rgba(0, 0, 0, 0.08);
@@ -101,19 +118,34 @@ body {
   transition: background-color 0.2s ease, color 0.2s ease;
 }
 
-/* Gemini-style Center Glow Background */
+/* Dynamic Sci-Fi Mesh & Glow Background (Hero / Landing state) */
 .ambient-bg {
   position: relative;
   background-color: var(--bg-main);
   background-image: 
-    radial-gradient(circle 800px at 50% 50%, rgba(24, 58, 140, 0.22) 0%, rgba(14, 32, 85, 0.12) 38%, rgba(9, 10, 15, 0) 72%);
+    radial-gradient(circle 800px at 50% 50%, rgba(9, 10, 15, 0.4) 0%, rgba(9, 10, 15, 0.85) 100%),
+    url('/bg-mesh.jpg');
+  background-size: cover;
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
   transition: background 0.3s ease;
+}
+
+/* While actively chatting: clean solid dark background with zero distracting background image */
+.ambient-bg.chat-active {
+  background-image: radial-gradient(circle 800px at 50% 15%, rgba(24, 58, 140, 0.15) 0%, rgba(9, 10, 15, 0) 70%);
+  background-color: var(--bg-main);
 }
 
 [data-theme="light"] .ambient-bg {
   background-color: #f8fafc;
   background-image: 
-    radial-gradient(circle 800px at 50% 50%, rgba(186, 230, 253, 0.55) 0%, rgba(224, 242, 254, 0.3) 38%, rgba(248, 250, 252, 0) 72%);
+    radial-gradient(circle 800px at 50% 50%, rgba(186, 230, 253, 0.45) 0%, rgba(224, 242, 254, 0.25) 38%, rgba(248, 250, 252, 0) 72%);
+}
+
+[data-theme="light"] .ambient-bg.chat-active {
+  background-image: radial-gradient(circle 800px at 50% 15%, rgba(186, 230, 253, 0.35) 0%, rgba(248, 250, 252, 0) 70%);
 }
 
 a {
